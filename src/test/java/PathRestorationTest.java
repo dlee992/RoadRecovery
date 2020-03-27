@@ -22,9 +22,12 @@ public class PathRestorationTest {
     static String basic_data_file_path = "src/test/resources/inputs/basic-data-20200319.xls";
     static String test_data_file_path  = "src/test/resources/inputs/test-data-with-oracle-20200327.txt";
 
+    static String test_data_file_path_2  = "src/test/resources/inputs/test-data-with-oracle-2020032702.txt";
+
 
     @Parameterized.Parameters(name = "{index}: assertEquals(DPResult, ManualResult)")
     public static Collection<Object> data() throws IOException {
+        // test case 1
         Collection<Object> retList = new ArrayList<>();
         FileInputStream fileInputStream = new FileInputStream(test_data_file_path);
         BufferedReader br = new BufferedReader(new InputStreamReader(fileInputStream));
@@ -35,6 +38,23 @@ public class PathRestorationTest {
             count++;
             JSONObject jsonObject = new JSONObject(strLine);
             jsonObject.put("basicDataPath", basic_data_file_path);
+            jsonObject.put("index", count);
+            retList.add(jsonObject);
+//            if (count > 10) break;
+        }
+        fileInputStream.close();
+
+        // test case 2
+        fileInputStream = new FileInputStream(test_data_file_path_2);
+        br = new BufferedReader(new InputStreamReader(fileInputStream));
+
+        count = 0;
+        while ((strLine = br.readLine()) != null) {
+//            System.out.print( count + ": ");
+            count++;
+            JSONObject jsonObject = new JSONObject(strLine);
+            jsonObject.put("basicDataPath", basic_data_file_path);
+            jsonObject.put("index", count);
             retList.add(jsonObject);
 //            if (count > 10) break;
         }
@@ -47,6 +67,7 @@ public class PathRestorationTest {
 
     @Test
     public void testPathRestorationWithNewCases()  {
+        System.out.println("index = " + testCase.getInt("index"));
         PathRestoration pathRestoration = new PathRestoration();
         String returnedJSONString = pathRestoration.pathRestorationMethod(testCase.toString());
         JSONObject jsonObject = new JSONObject(returnedJSONString);
