@@ -23,6 +23,18 @@ public class RuntimePath {
 
     public RuntimePath() {}
 
+    public String getLiteralPath() {
+        StringBuilder stringBuilder = new StringBuilder();
+        int count = 0;
+        for (RuntimeNode runtimeNode: runtimeNodeList
+             ) {
+            if (count > 0) stringBuilder.append("|");
+            count++;
+            stringBuilder.append(runtimeNode.node.index);
+        }
+        return stringBuilder.toString();
+    }
+
     public long getLength() {
         long length = 0;
         for (int i = 1; i < runtimeNodeList.size() - 1; ++i) {
