@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static nju.ics.Entity.NodeSource.IDENTIFY;
-import static nju.ics.Entity.Path.fixedLengthString;
 
 public class RuntimePath {
     public List<RuntimeNode> runtimeNodeList = new ArrayList<>();
@@ -22,6 +21,10 @@ public class RuntimePath {
     }
 
     public RuntimePath() {}
+
+    public String fixedLengthString(String string, int length) {
+        return String.format("%1$"+length+ "s", string);
+    }
 
     public String getLiteralPath() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -41,10 +44,6 @@ public class RuntimePath {
             length += runtimeNodeList.get(i).node.mileage;
         }
         return length;
-    }
-
-    public long getLengthWithEnd() {
-        return getLength() + runtimeNodeList.get(runtimeNodeList.size() - 1).node.mileage;
     }
 
     public void print(String desc) {

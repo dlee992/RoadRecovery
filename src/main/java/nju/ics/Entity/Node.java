@@ -2,19 +2,13 @@ package nju.ics.Entity;
 
 
 public class Node implements Cloneable {
-    /* attributes, e.g., {3C0101, wu'bei-yun'shan'zhi'jia, 0}
-     */
+    /* attributes */
     public String index;
     public String name;
     public NodeType type;
     public NodeSource source; // for testing
     public Node mutualNode = null;
     public long mileage;
-
-    // unused attributes
-    double longitude; //jing'du
-    double latitude;  //wei'du
-
 
     public Node() {
     }
@@ -50,8 +44,5 @@ public class Node implements Cloneable {
         return stu;
     }
 
-    public void print() {
-//        System.out.println(index + " " + name + " " + type);
-    }
 }
 

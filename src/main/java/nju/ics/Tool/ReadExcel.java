@@ -21,8 +21,6 @@ public class ReadExcel {
     int MUTUALSHEET = 3;
     int MILEAGESHEET = 6;
 
-    int gantryCount = 0;
-
     private Graph graph = new Graph();
 
     public Graph buildGraph(String filePath) {
@@ -42,15 +40,8 @@ public class ReadExcel {
                 }
             }
             System.out.println("node size = " + graph.nodes.size());
-            System.out.println("edge size = " + graph.edgeSet.size());
+//            System.out.println("edge size = " + graph.edgeSet.size());
 
-//            for (Node node: graph.nodes
-//                 ) {
-//                if (node.index.length() <= 10) graph.gantryCount++;
-//            }
-//            System.out.println("gantry size = " + graph.gantryCount);
-
-//            graph.buildAllShortestPathByFloyd();
             graph.buildAllShortestPathByDijkstra();
 
         } catch (IOException e) {

@@ -1,13 +1,8 @@
 package nju.ics.Entity;
 
-import static nju.ics.Entity.NodeSource.IDENTIFY;
-
 public class RuntimeNode implements Cloneable {
     public Node node;
     public String transTime = null;
-
-    public RuntimeNode() {
-    }
 
     public RuntimeNode(Node node, String transTime) {
         this.node = node;

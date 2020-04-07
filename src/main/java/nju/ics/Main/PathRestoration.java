@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PathRestoration {
 
-    private boolean debugging = false;
+    private boolean debugging = true;
 
     public static Graph graph = null;
     /**
@@ -140,7 +140,6 @@ public class PathRestoration {
 //        System.out.println("原路径长度=" + originalPath.runtimeNodeList.size());
         Algorithm algorithm = new DPAlgorithm();
         recoveredPath = algorithm.execute(graph, originalPath, configs);
-        if (debugging) recoveredPath.print("算法恢复的路径");
 
         //generate JSON data for return
         JSONObject returnJsonObj = getReturnedJsonObject(recoveredPath, "Unknown reason");
