@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PathRestoration {
 
-    private boolean debugging = true;
+    private boolean debugging = false;
 
     public static Graph graph = null;
     /**
