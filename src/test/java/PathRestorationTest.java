@@ -40,9 +40,9 @@ public class PathRestorationTest {
 //        readAFile(retList, test_data_file_path_2, false);
 
 //        readAFile(retList, test_data_file_path_3, true);
-        readAFile(retList, test_data_file_path_4, true);
+//        readAFile(retList, test_data_file_path_4, true);
 
-//        readAFile(retList, test_data_single, false);
+        readAFile(retList, test_data_single, false);
         return retList;
     }
 
@@ -80,13 +80,18 @@ public class PathRestorationTest {
     public void testPathRestorationWithNewCases()  {
 //        System.out.println("index = " + testCase.getInt("index"));
         PathRestoration pathRestoration = new PathRestoration();
-        pathRestoration.pathRestorationMethod(testCase.toString());
+        String ret = pathRestoration.pathRestorationMethod(testCase.toString());
         try {
-            String DPResult = pathRestoration.recoveredPath.getLiteralPath();
-            System.out.println(DPResult);
+            if (pathRestoration.recoveredPath != null) {
+                String DPResult = pathRestoration.recoveredPath.getLiteralPath();
+                System.out.println(DPResult);
 
 //            String manualResult = testCase.getString("manualResult");
 //            assertEquals(manualResult, DPResult);
+            }
+            else {
+                System.out.println(ret);
+            }
         }
         catch (JSONException Exp) {
             //do nothing.

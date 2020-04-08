@@ -136,6 +136,13 @@ public class PathRestoration {
             ).toString();
         }
 
+        if (startNode != null && endNode != null && gantryList.size() == 0) {
+            return getReturnedJsonObject(
+                    null,
+                    "gantryIdList is empty."
+            ).toString();
+        }
+
 //        originalPath.print("input path");
 //        System.out.println("原路径长度=" + originalPath.runtimeNodeList.size());
         Algorithm algorithm = new DPAlgorithm();
