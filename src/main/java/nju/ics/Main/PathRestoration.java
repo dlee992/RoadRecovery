@@ -136,13 +136,6 @@ public class PathRestoration {
             ).toString();
         }
 
-        if (startNode != null && endNode != null && gantryList.size() == 0) {
-            return getReturnedJsonObject(
-                    null,
-                    "gantryIdList is empty."
-            ).toString();
-        }
-
 //        originalPath.print("input path");
 //        System.out.println("原路径长度=" + originalPath.runtimeNodeList.size());
         Algorithm algorithm = new DPAlgorithm();
@@ -201,9 +194,14 @@ public class PathRestoration {
                 transTimeGroup.append(runtimeNode.transTime);
             }
 
-            returnJsonObj.put("gantryHexGroup",  gantryHexGroup.toString());
-            returnJsonObj.put("gantryFlagGroup", gantryFlagGroup.toString());
-            returnJsonObj.put("transTimeGroup",  transTimeGroup.toString());
+            if (gantryHexGroup.length() == 0) {
+                handleFailure(returnJsonObj, "gantryHexGroup is empty");
+            }
+            else {
+                returnJsonObj.put("gantryHexGroup", gantryHexGroup.toString());
+                returnJsonObj.put("gantryFlagGroup", gantryFlagGroup.toString());
+                returnJsonObj.put("transTimeGroup", transTimeGroup.toString());
+            }
 
         } else {
             handleFailure(returnJsonObj, description);

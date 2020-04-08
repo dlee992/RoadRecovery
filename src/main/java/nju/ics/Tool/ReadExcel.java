@@ -53,6 +53,7 @@ public class ReadExcel {
 
 
     private void addEdgeFromSheet(Sheet sheet, int sheetIndex) {
+
         Iterator<Row> rowIterator = sheet.rowIterator();
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
@@ -109,15 +110,22 @@ public class ReadExcel {
         // null node
         if (row.getCell(base+1).getStringCellValue().equals("无"))
             return null;
+        try {
+            node.index = row.getCell(base).getStringCellValue();
+            node.name = row.getCell(base+1).getStringCellValue();
+            switch ((int) row.getCell(base+2).getNumericCellValue()) {
+                case 0: node.type = NORMALPORTAL; break;
+                case 1: node.type = PROVINCIALPORTAL; break;
+                case 3: node.type = TOLLSTATION; break;
+            }
+        } catch (IllegalStateException exc) {
+            System.err.println("Error location: " +
+                    "sheet name=" + row.getSheet().getSheetName() +
+                    " row=" + (row.getCell(base).getRowIndex()+1) +
+                    " column=" + (row.getCell(base).getColumnIndex()+1));
+//            exc.printStackTrace();
+            }
 
-        node.index = row.getCell(base).getStringCellValue();
-        node.name = row.getCell(base+1).getStringCellValue();
-        switch ((int) row.getCell(base+2).getNumericCellValue()) {
-            case 0: node.type = NORMALPORTAL; break;
-            case 1: node.type = PROVINCIALPORTAL; break;
-            case 3: node.type = TOLLSTATION; break;
-        }
-//        System.out.println(node.index+", "+node.name+", "+node.type);
         return node;
     }
 }
