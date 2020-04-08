@@ -6,7 +6,7 @@
 
     <groupId>icsnju</groupId>
     <artifactId>RoadRecovery</artifactId>
-    <version>1.1.20200326</version>
+    <version>1.1.20200408</version>
     <build>
         <plugins>
             <plugin>
