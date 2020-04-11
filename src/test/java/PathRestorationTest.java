@@ -88,6 +88,7 @@ public class PathRestorationTest {
             if (pathRestoration.recoveredPath != null) {
                 String DPResult = pathRestoration.recoveredPath.getLiteralPath();
                 System.out.println(DPResult);
+                System.out.println(ret);
 
 //            String manualResult = testCase.getString("manualResult");
 //            assertEquals(manualResult, DPResult);

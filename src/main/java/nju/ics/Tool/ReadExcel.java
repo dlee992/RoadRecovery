@@ -59,7 +59,7 @@ public class ReadExcel {
                     (sheetIndex == 6 && row.getRowNum() < SHEETHEAD6)) continue;
 
             //Specifically for sheet 6
-            System.out.println("node size = " + graph.nodes.size());
+//            System.out.println("node size = " + graph.nodes.size());
 
             Node inNode = extractNodeFromRow(row, 1);
 
