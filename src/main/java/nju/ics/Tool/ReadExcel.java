@@ -13,10 +13,6 @@ import static nju.ics.Entity.NodeType.*;
 
 public class ReadExcel {
 
-
-    private int SHEETHEAD1AND3 = 4;
-    private int SHEETHEAD6 = 3;
-
     int EDGESHEET = 1;
     int MUTUALSHEET = 3;
     int MILEAGESHEET = 6;
@@ -29,19 +25,19 @@ public class ReadExcel {
             Iterator<Sheet> sheetIterator = workbook.sheetIterator();
             while (sheetIterator.hasNext()) {
                 Sheet sheet = sheetIterator.next();
-                if (sheet.getSheetName().equals("1")) { // all edge information
-                    addEdgeFromSheet(sheet, EDGESHEET);
-                }
-                else if (sheet.getSheetName().equals("3")) { // all mutual information
-                    addEdgeFromSheet(sheet, MUTUALSHEET);
-                }
-                else if (sheet.getSheetName().equals("门架里程")) {
-                    addEdgeFromSheet(sheet, MILEAGESHEET);
+                switch (sheet.getSheetName()) {
+                    case "1":  // all edge information
+                        addEdgeFromSheet(sheet, EDGESHEET);
+                        break;
+                    case "3":  // all mutual information
+                        addEdgeFromSheet(sheet, MUTUALSHEET);
+                        break;
+                    case "门架里程":
+                        addEdgeFromSheet(sheet, MILEAGESHEET);
+                        break;
                 }
             }
             System.out.println("node size = " + graph.nodes.size());
-//            System.out.println("edge size = " + graph.edgeSet.size());
-
             graph.buildAllShortestPathByDijkstra();
 
         } catch (IOException e) {
@@ -51,16 +47,20 @@ public class ReadExcel {
         return graph;
     }
 
-
     private void addEdgeFromSheet(Sheet sheet, int sheetIndex) {
 
         Iterator<Row> rowIterator = sheet.rowIterator();
         while (rowIterator.hasNext()) {
+
             Row row = rowIterator.next();
+            int SHEETHEAD1AND3 = 4;
+            int SHEETHEAD6 = 3;
             if ((sheetIndex <=3 && row.getRowNum() < SHEETHEAD1AND3) ||
                     (sheetIndex == 6 && row.getRowNum() < SHEETHEAD6)) continue;
 
             //Specifically for sheet 6
+            System.out.println("node size = " + graph.nodes.size());
+
             Node inNode = extractNodeFromRow(row, 1);
 
             if (sheetIndex == 6) {
@@ -70,6 +70,7 @@ public class ReadExcel {
                 inNode.mileage = (long) row.getCell(3).getNumericCellValue();
                 continue;
             }
+
             /*
              Add two nodes and one edge into graph
              */
@@ -99,17 +100,18 @@ public class ReadExcel {
             edge.inNode = inNode;
             edge.outNode = outNode;
             if (sheetIndex == EDGESHEET) {
-                if (!graph.edgeSet.contains(edge)) graph.edgeSet.add(edge);
+                graph.edgeSet.add(edge);
             }
         }
     }
 
     private Node extractNodeFromRow(Row row, int base) {
         Node node = new Node();
-//        System.out.println(row.getRowNum()+1+","+base);
+
         // null node
         if (row.getCell(base+1).getStringCellValue().equals("无"))
             return null;
+
         try {
             node.index = row.getCell(base).getStringCellValue();
             node.name = row.getCell(base+1).getStringCellValue();
@@ -118,13 +120,13 @@ public class ReadExcel {
                 case 1: node.type = PROVINCIALPORTAL; break;
                 case 3: node.type = TOLLSTATION; break;
             }
-        } catch (IllegalStateException exc) {
+        }
+        catch (IllegalStateException exc) {
             System.err.println("Error location: " +
                     "sheet name=" + row.getSheet().getSheetName() +
                     " row=" + (row.getCell(base).getRowIndex()+1) +
                     " column=" + (row.getCell(base).getColumnIndex()+1));
-//            exc.printStackTrace();
-            }
+        }
 
         return node;
     }
