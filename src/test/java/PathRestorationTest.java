@@ -19,10 +19,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class PathRestorationTest {
 
-
     static String basic_data_file_path = "src/test/resources/inputs/basic-data-20200319.xls";
 //    static String basic_data_file_path_3 = "src/test/resources/inputs/basic-data-0408-3.xls";
-
 
     static String test_data_file_path_1  = "src/test/resources/inputs/test-data-with-oracle-20200327.txt";
     static String test_data_file_path_2  = "src/test/resources/inputs/test-data-with-oracle-2020032702.txt";
@@ -33,18 +31,17 @@ public class PathRestorationTest {
     static List<String> originDPResults = new ArrayList<>();
     static int count = 0;
 
-//    @Parameterized.Parameters(name = "{index}: assertEquals(DPResult, ManualResult)")
-    @Parameterized.Parameters(name = "{index}: assertEquals(from origin, from chen)")
+    @Parameterized.Parameters(name = "{index}: assertEquals(DPResult, ManualResult)")
     public static Collection<Object> data() throws IOException {
         Collection<Object> retList = new ArrayList<>();
 
-//        readAFile(retList, test_data_file_path_1, false);
+        readAFile(retList, test_data_file_path_1, false);
 //        readAFile(retList, test_data_file_path_2, false);
 
 //        readAFile(retList, test_data_file_path_3, true);
 //        readAFile(retList, test_data_file_path_4, true);
 
-        readAFile(retList, test_data_single, false);
+//        readAFile(retList, test_data_single, false);
         return retList;
     }
 
@@ -89,40 +86,15 @@ public class PathRestorationTest {
                 String DPResult = pathRestoration.recoveredPath.getLiteralPath();
                 System.out.println(DPResult);
                 System.out.println(ret);
-
-//            String manualResult = testCase.getString("manualResult");
-//            assertEquals(manualResult, DPResult);
+                String manualResult = testCase.getString("manualResult");
+                assertEquals(manualResult, DPResult);
             }
             else {
-                System.out.println(ret);
+                System.err.println(ret);
             }
         }
         catch (JSONException Exp) {
             //do nothing.
         }
-    }
-
-//    @Test
-    public void testPathRestorationByChen()  {
-        System.out.println("index = " + testCase.getInt("index"));
-        PathRestoration pathRestoration = new PathRestoration();
-        pathRestoration.pathRestorationMethod(testCase.toString());
-        String manualResult = testCase.getString("manualResult");
-        String DPResult = pathRestoration.recoveredPath.getLiteralPath();
-//        System.out.println(DPResult);
-//        System.out.println(manualResult);
-
-        int cur = testCase.getInt("index");
-        System.out.println("cur = " + cur);
-        if (cur < 17) {
-            System.out.println("cur = " + cur + " DPResult = " + DPResult);
-            originDPResults.add(DPResult);
-        }
-        else {
-            System.out.println("i = " + cur%17 + " j = " + cur);
-            assertEquals(originDPResults.get(cur%17), DPResult);
-        }
-//        assertEquals(manualResult, DPResult);
-
     }
 }

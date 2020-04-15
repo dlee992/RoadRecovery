@@ -50,8 +50,8 @@ public class DPAlgorithm implements Algorithm {
                 distanceFromDeletedNodesToIJ[i][j] =
                     j - i <= 1 ? 0 : distanceFromNodesToNodes(graph, originalPath.runtimeNodeList, i, j);
                 if (debug) {
-                    System.out.println("distance delete " + i + " " + j + ": "
-                        + distanceFromDeletedNodesToIJ[i][j]);
+//                    System.out.println("distance delete " + i + " " + j + ": "
+//                        + distanceFromDeletedNodesToIJ[i][j]);
                 }
             }
         }
