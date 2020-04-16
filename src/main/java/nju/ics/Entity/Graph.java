@@ -46,10 +46,11 @@ public class Graph {
             return null;
         }
         Path path = new Path();
-        for (int x = to; x != -1; x = pre_node[from][x]) {
+        for (int x = to, flag = from == to ? 0 : 1; x != -1; x = pre_node[from][x], flag = 1) {
             Node node = (Node) (nodes.get(x)).clone();
             node.source = (x == to || x == from) ? IDENTIFY : ADD;
             path.nodeList.add(node);
+            if (flag == 1 && x == from) break;
         }
         Collections.reverse(path.nodeList);
 //        assert (path.getLength() == dist[from][to]);
@@ -79,10 +80,12 @@ public class Graph {
             q.clear();
             q.add(new NodeDijkstra(from, 0, -1));
 
-            while (!q.isEmpty()) {
+            for (int flag = 1; !q.isEmpty(); flag = 0) {
                 NodeDijkstra x = q.poll();
                 if (dist[from][x.index] >= x.dis) {
-                    dist[from][x.index] = x.dis;
+                    if (!(flag == 1 && nodes.get(from).type == TOLLSTATION)) {
+                        dist[from][x.index] = x.dis;
+                    }
                     pre_node[from][x.index] = x.pre_node;
                     if (x.index != from && nodes.get(x.index).type == TOLLSTATION) { // 收费站不能再往下转移
                         continue;
