@@ -113,9 +113,29 @@ public class ReadExcel {
             return null;
 
         try {
-            node.index = row.getCell(base).getStringCellValue();
-            node.name = row.getCell(base+1).getStringCellValue();
-            switch ((int) row.getCell(base+2).getNumericCellValue()) {
+            if (row.getCell(base).getCellType() == CellType.NUMERIC) {
+                node.index = String.valueOf(row.getCell(base).getNumericCellValue());
+            }
+            else if (row.getCell(base).getCellType() == CellType.STRING) {
+                node.index = row.getCell(base).getStringCellValue();
+            }
+
+            if (row.getCell(base+1).getCellType() == CellType.NUMERIC) {
+                node.name = String.valueOf(row.getCell(base+1).getNumericCellValue());
+            }
+            else if (row.getCell(base+1).getCellType() == CellType.STRING) {
+                node.name = row.getCell(base+1).getStringCellValue();
+            }
+
+            int tmpType = -1;
+            if (row.getCell(base+2).getCellType() == CellType.NUMERIC) {
+                tmpType = (int) row.getCell(base+2).getNumericCellValue();
+            }
+            else if (row.getCell(base+2).getCellType() == CellType.STRING) {
+                tmpType = Integer.parseInt(row.getCell(base+2).getStringCellValue());
+            }
+
+            switch (tmpType) {
                 case 0: node.type = NORMALPORTAL; break;
                 case 1: node.type = PROVINCIALPORTAL; break;
                 case 3: node.type = TOLLSTATION; break;
