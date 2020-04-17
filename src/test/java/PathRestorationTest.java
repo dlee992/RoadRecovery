@@ -35,13 +35,13 @@ public class PathRestorationTest {
     public static Collection<Object> data() throws IOException {
         Collection<Object> retList = new ArrayList<>();
 
-//        readAFile(retList, test_data_file_path_1, false);
+        readAFile(retList, test_data_file_path_1, false);
 //        readAFile(retList, test_data_file_path_2, false);
 
 //        readAFile(retList, test_data_file_path_3, true);
 //        readAFile(retList, test_data_file_path_4, true);
 
-        readAFile(retList, test_data_single, false);
+//        readAFile(retList, test_data_single, false);
         return retList;
     }
 
@@ -52,9 +52,10 @@ public class PathRestorationTest {
         String strLine;
         while ((strLine = br.readLine()) != null) {
             JSONObject jsonObject = new JSONObject(strLine);
-//            jsonObject.put("basicDataPath", basic_data_file_path);
-            jsonObject.put("basicDataPath", basic_data_file_path_2);
+            jsonObject.put("basicDataPath", basic_data_file_path);
+//            jsonObject.put("basicDataPath", basic_data_file_path_2);
             jsonObject.put("index", count);
+//            jsonObject.put("deleteCost", 500);
 
             //make up with missing attributes in xu and chen's data.
             if (broken) {
