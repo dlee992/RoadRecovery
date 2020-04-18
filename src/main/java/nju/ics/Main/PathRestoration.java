@@ -93,6 +93,9 @@ public class PathRestoration {
             originalPath.runtimeNodeList.add(new RuntimeNode(startNode, enTime));
 //            System.out.println(enTime);
         }
+        else {
+            System.err.println("no start node");
+        }
 
         //I need a runtime node, {node, timestamp}
         int count = 0;
@@ -112,6 +115,9 @@ public class PathRestoration {
         if (endNode != null) {
             endNode.source = NodeSource.IDENTIFY;
             originalPath.runtimeNodeList.add(new RuntimeNode(endNode, exTime));
+        }
+        else {
+            System.err.println("no end node");
         }
 
         //If exist unknown gantry, then return with failure.
