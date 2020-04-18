@@ -35,13 +35,13 @@ public class PathRestorationTest {
     public static Collection<Object> data() throws IOException {
         Collection<Object> retList = new ArrayList<>();
 
-        readAFile(retList, test_data_file_path_1, false);
+//        readAFile(retList, test_data_file_path_1, false);
 //        readAFile(retList, test_data_file_path_2, false);
 
 //        readAFile(retList, test_data_file_path_3, true);
 //        readAFile(retList, test_data_file_path_4, true);
 
-//        readAFile(retList, test_data_single, false);
+        readAFile(retList, test_data_single, false);
         return retList;
     }
 
@@ -86,8 +86,9 @@ public class PathRestorationTest {
         try {
             if (pathRestoration.recoveredPath != null) {
                 String DPResult = pathRestoration.recoveredPath.getLiteralPath();
+                pathRestoration.recoveredPath.print("DP result");
                 System.out.println(DPResult);
-                System.out.println(ret);
+//                System.out.println(ret);
                 String manualResult = testCase.getString("manualResult");
                 assertEquals(manualResult, DPResult);
             }
