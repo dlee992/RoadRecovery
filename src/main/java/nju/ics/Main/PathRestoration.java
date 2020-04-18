@@ -168,7 +168,7 @@ public class PathRestoration {
 
             //fix missing time information
             StringBuilder transTimeGroup  = new StringBuilder();
-            String lastTime = "";
+            String lastTime = exTime;
 
             //reverse order
             for (int i = recoveredPath.runtimeNodeList.size()-1; i >= 0 ; i--) {
