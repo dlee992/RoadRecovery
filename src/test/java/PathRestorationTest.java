@@ -63,7 +63,7 @@ public class PathRestorationTest {
                 jsonObject.put("exTime", "");
                 jsonObject.put("modifyCost", 0.01);
                 jsonObject.put("addCost", 0.1);
-                jsonObject.put("deleteCost", 500);
+                jsonObject.put("deleteCost", 300);
                 jsonObject.put("deleteCost2", 2);
                 jsonObject.put("deleteEndCost", 100000);
             }
@@ -86,7 +86,7 @@ public class PathRestorationTest {
         try {
             if (pathRestoration.recoveredPath != null) {
                 String DPResult = pathRestoration.recoveredPath.getLiteralPath();
-//                pathRestoration.recoveredPath.print("DP result");
+                pathRestoration.recoveredPath.print("DP result");
 //                System.out.println(DPResult);
                 System.out.println(ret);
                 String manualResult = testCase.getString("manualResult");
