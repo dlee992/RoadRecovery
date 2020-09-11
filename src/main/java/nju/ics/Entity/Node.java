@@ -1,6 +1,8 @@
 package nju.ics.Entity;
 
 
+import java.util.List;
+
 public class Node implements Cloneable {
     /* attributes */
     public String index;
@@ -9,6 +11,10 @@ public class Node implements Cloneable {
     public NodeSource source; // for testing
     public Node mutualNode = null;
     public long mileage;
+
+    /* new attributes for money */
+    public List<TollUnit> tollUnitList = null;
+    public int tollUnitLength;
 
     public Node() {
     }

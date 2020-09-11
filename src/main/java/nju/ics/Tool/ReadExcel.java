@@ -100,7 +100,7 @@ public class ReadExcel {
             edge.inNode = inNode;
             edge.outNode = outNode;
             if (sheetIndex == EDGESHEET) {
-                graph.edgeSet.add(edge);
+                graph.edges.add(edge);
             }
         }
     }

@@ -8,14 +8,22 @@ import nju.ics.Tool.ReadExcel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class PathRestoration {
 
     private boolean debugging = false;
 
     public static Graph graph = null;
+    /**
+     * when outside told me to update graph metadata, then set @updatedFlag to true;
+     * when Penny updated the graph metadata, then set @updatedFlag to false again.
+     */
+    public static boolean updatedFlag = false;
+    public static HashMap<Long, UpdatedBasicData> hashMap = new HashMap<>();
+
     /**
      * input key
      */
@@ -36,12 +44,12 @@ public class PathRestoration {
     /**
      * interface method for external call
      *
-     * @param jsonData each element of an input path in JSON format
-     * @return jsonData.toString()
+     * @param inputJson each element of an input path in JSON format
+     * @return inputJson.toString()
      */
-    public String pathRestorationMethod(String jsonData)  {
+    public String pathRestorationMethod(String inputJson)  {
         //analyze JSON data
-        JSONObject jsonObj = new JSONObject(jsonData);
+        JSONObject jsonObj = new JSONObject(inputJson);
 
         enStationId = jsonObj.getString("enStationId");
         exStationId = jsonObj.getString("exStationId");
@@ -81,13 +89,23 @@ public class PathRestoration {
         configs.add(deleteCost2);
         configs.add(deleteEndCost);
 
-        vehicleType = jsonObj.getInt("vehicleType");
+//        vehicleType = jsonObj.getInt("vehicleType");
 
-        //build the graph
-        //specify the excel path
-        if (graph == null) {
-            ReadExcel readExcel = new ReadExcel();
-            graph = readExcel.buildGraph(basicDataPath);
+        //TODO: if new updated time validates, then rebuild the graph
+        Long currentDate = getCurrentDate();
+        List<Long> dateList = new ArrayList<>(PathRestoration.hashMap.keySet());
+        Collections.sort(dateList);
+        for (Long curKey:
+             dateList) {
+            if (curKey > currentDate) break;
+
+            //read from the corresponding data to update graph metadata
+            updatedFlag = true;
+            UpdatedBasicData updatedBasicData = PathRestoration.hashMap.get(curKey);
+            GraphUpdating.updateGraph(graph, updatedBasicData);
+
+            //remove curKey and its value from hashmap
+            PathRestoration.hashMap.remove(curKey);
         }
 
         //add the start and end node into original path
@@ -155,6 +173,12 @@ public class PathRestoration {
         JSONObject returnJsonObj = getReturnedJsonObject(recoveredPath, "Unknown reason");
 
         return returnJsonObj.toString();
+    }
+
+    private Long getCurrentDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime now = LocalDateTime.now();
+        return Long.valueOf(dtf.format(now));
     }
 
     private JSONObject getReturnedJsonObject(RuntimePath recoveredPath, String description) {

@@ -3,24 +3,23 @@ package nju.ics.Entity;
 import static nju.ics.Entity.NodeSource.*;
 import static nju.ics.Entity.NodeType.TOLLSTATION;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class Graph {
-    //attributes
-    public ArrayList<Node> nodes = new ArrayList<Node>();
-    public Set<Edge> edgeSet = new HashSet<Edge>();
+    //for update flag
+    public boolean edgeFlag = false;
+    public boolean mutualFlag = false;
+    public boolean moneyFlag = false;
+
+    //data structure for Li Da
+    public ArrayList<Node> nodes = new ArrayList<>();
+    public Set<Edge> edges = new HashSet<>();
+    public HashMap<TollAndVehicleType, Long> moneyMap = new HashMap<>();
+
+    //data structure for Penny
     public int[][] dist;
     public int[][] pre_node;
-    private ArrayList<ArrayList<Integer>> edges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
+    private ArrayList<ArrayList<Integer>> dijstraEdges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
 
     private static class NodeDijkstra {
 
@@ -61,14 +60,14 @@ public class Graph {
     public void buildAllShortestPathByDijkstra() {
         for (int i = 0; i < nodes.size(); ++i) {
 //            System.out.println(nodes.get(i).index + nodes.get(i).name);
-            edges.add(new ArrayList<Integer>());
+            dijstraEdges.add(new ArrayList<Integer>());
         }
-        for (Edge edge : edgeSet) {
+        for (Edge edge : edges) {
 //            if (edge.inNode.getMutualNode() != null && edge.inNode.getMutualNode() // 打印能调头的门架
 //                .equals(edge.outNode)) {
 //                System.out.println("+++" + edge.inNode.index + edge.inNode.name);
 //            }
-            edges.get(nodes.indexOf(edge.inNode)).add(nodes.indexOf(edge.outNode));
+            dijstraEdges.get(nodes.indexOf(edge.inNode)).add(nodes.indexOf(edge.outNode));
         }
 
         dist = new int[nodes.size()][nodes.size()];
@@ -90,7 +89,7 @@ public class Graph {
                     if (x.index != from && nodes.get(x.index).type == TOLLSTATION) { // 收费站不能再往下转移
                         continue;
                     }
-                    for (int y : edges.get(x.index)) {
+                    for (int y : dijstraEdges.get(x.index)) {
                         int disy = x.dis + (int)nodes.get(y).mileage;
                         if (dist[from][y] > disy) {
                             q.add(new NodeDijkstra(y, dist[from][y] = disy, x.index));

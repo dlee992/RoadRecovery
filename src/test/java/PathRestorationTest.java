@@ -66,6 +66,7 @@ public class PathRestorationTest {
                 jsonObject.put("deleteCost", 300);
                 jsonObject.put("deleteCost2", 2);
                 jsonObject.put("deleteEndCost", 100000);
+
             }
 
             retList.add(jsonObject);
