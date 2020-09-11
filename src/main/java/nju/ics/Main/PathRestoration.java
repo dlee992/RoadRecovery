@@ -25,6 +25,8 @@ public class PathRestoration {
 
     double addCost, deleteCost, deleteCost2, modifyCost, deleteEndCost;
 
+    int vehicleType;
+
     StringBuilder description = new StringBuilder("Unknown gantry: ");
     int desCount = 0;
 
@@ -78,6 +80,8 @@ public class PathRestoration {
         configs.add(deleteCost);
         configs.add(deleteCost2);
         configs.add(deleteEndCost);
+
+        vehicleType = jsonObj.getInt("vehicleType");
 
         //build the graph
         //specify the excel path
