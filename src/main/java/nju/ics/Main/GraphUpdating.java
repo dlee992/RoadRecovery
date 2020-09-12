@@ -18,19 +18,22 @@ public class GraphUpdating {
     static BufferedReader reader = null;
 
 
-    public static void updateGraph(Graph graph, UpdatedBasicData updatedBasicData) {
+    public static boolean updateGraph(Graph graph, UpdatedBasicData updatedBasicData) {
         GraphUpdating.graph = graph;
         GraphUpdating.updatedBasicData = updatedBasicData;
 
         if (updatedBasicData.paramType == 1)
-            updateNodeAndEdge();
+            return updateNodeAndEdge();
         else if (updatedBasicData.paramType == 2)
-            updateMutualNode();
+            return updateMutualNode();
         else if (updatedBasicData.paramType == 3)
-            updateMoneyMap();
+            return updateMoneyMap();
+
+        //should not go here
+        return false;
     }
 
-    private static void updateNodeAndEdge() {
+    private static boolean updateNodeAndEdge() {
         graph.nodes = new ArrayList<>();
         graph.edges = new HashSet<>();
 
@@ -38,6 +41,7 @@ public class GraphUpdating {
             reader = getBufferReader();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
         int rowIndex = 0;
         while (true) {
@@ -55,12 +59,15 @@ public class GraphUpdating {
                         stackList) {
                     System.err.println(stackTrace);
                 }
+                return false;
             }
             else graph.edges.add(edge);
         }
 
         graph.edgeFlag = true;
         releaseResources();
+
+        return true;
     }
 
     private static void releaseResources() {
@@ -119,7 +126,7 @@ public class GraphUpdating {
         return new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
     }
 
-    private static void updateMutualNode() {
+    private static boolean updateMutualNode() {
         for (Node node:
              graph.nodes) {
             node.mutualNode = null;
@@ -132,6 +139,7 @@ public class GraphUpdating {
             reader = getBufferReader();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
 
         int rowIndex = 0;
@@ -144,6 +152,7 @@ public class GraphUpdating {
             Node mutualNode2 = new Node(elements[2]);
             if (!graph.nodes.contains(mutualNode1) || !graph.nodes.contains(mutualNode2)) {
                 System.err.println("mutual node not found in graph.");
+                return false;
             }
 
             Node realMutualNode1 = graph.nodes.get(graph.nodes.indexOf(mutualNode1));
@@ -164,6 +173,8 @@ public class GraphUpdating {
         }
 
         graph.mutualFlag = true;
+        releaseResources();
+        return true;
     }
 
     private static String getLineFromReader() {
@@ -180,13 +191,14 @@ public class GraphUpdating {
         return line;
     }
 
-    private static void updateMoneyMap() {
+    private static boolean updateMoneyMap() {
         graph.moneyMap.clear();
 
         try {
             reader = getBufferReader();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
 
         int rowIndex = 0;
@@ -203,6 +215,8 @@ public class GraphUpdating {
         }
 
         graph.moneyFlag = true;
+        releaseResources();
+        return true;
     }
 
     public static boolean consistentChecking(Graph graph) {

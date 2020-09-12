@@ -4,6 +4,7 @@ package nju.ics.Main;
 import nju.ics.Algorithm.Algorithm;
 import nju.ics.Algorithm.DPAlgorithm;
 import nju.ics.Entity.*;
+import org.apache.commons.math3.analysis.function.StepFunction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -101,7 +102,10 @@ public class PathRestoration {
             //read from the corresponding data to update graph metadata
             updatedFlag = true;
             UpdatedBasicData updatedBasicData = PathRestoration.hashMap.get(curKey);
-            GraphUpdating.updateGraph(graph, updatedBasicData);
+            if (!GraphUpdating.updateGraph(graph, updatedBasicData)) {
+                System.err.println("Graph updating failed.");
+//                System.exit(-1);
+            }
 
             //remove curKey and its value from hashmap
             PathRestoration.hashMap.remove(curKey);
