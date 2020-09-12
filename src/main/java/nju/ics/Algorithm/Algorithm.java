@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface Algorithm {
 
-    public RuntimePath execute(Graph graph, RuntimePath path, List<Double> configs);
+    public RuntimePath execute(Graph graph, RuntimePath path, List<Double> configs, int vehicleType);
 }

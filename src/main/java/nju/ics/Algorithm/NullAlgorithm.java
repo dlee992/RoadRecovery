@@ -8,7 +8,7 @@ import java.util.List;
 
 public class NullAlgorithm implements Algorithm {
     public static int cnt = 0;
-    public RuntimePath execute(Graph graph, RuntimePath path, List<Double> configs) {
+    public RuntimePath execute(Graph graph, RuntimePath path, List<Double> configs, int vehicleType) {
         //do nothing but return oracle path
         return path;
     }

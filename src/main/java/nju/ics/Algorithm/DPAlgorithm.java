@@ -15,7 +15,7 @@ public class DPAlgorithm implements Algorithm {
      *
      * @return output path(P*), return null when failed
      */
-    public RuntimePath execute(Graph graph, RuntimePath originalPath, List<Double> configs) {
+    public RuntimePath execute(Graph graph, RuntimePath originalPath, List<Double> configs, int vehicleType) {
 
         double modifyCost = configs.get(0); //0.01
         double addCost = configs.get(1); //0.1
