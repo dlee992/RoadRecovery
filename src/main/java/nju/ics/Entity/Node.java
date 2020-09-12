@@ -2,6 +2,7 @@ package nju.ics.Entity;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class Node implements Cloneable {
     /* attributes */
@@ -33,6 +34,18 @@ public class Node implements Cloneable {
         this.index = index;
         this.type = type;
         this.mutualNode = mutualNode;
+    }
+
+    //For Penny to call
+    public Long getNodeTotalFee(Map<String, Long> moneyMap, int vehicleType) {
+        long feeSum = 0;
+        for (String tollUnitIndex:
+             tollUnitList) {
+            String mapKey = tollUnitIndex + String.valueOf(vehicleType);
+            Long fee = moneyMap.get(mapKey);
+            feeSum += fee;
+        }
+        return feeSum;
     }
 
     //operations
