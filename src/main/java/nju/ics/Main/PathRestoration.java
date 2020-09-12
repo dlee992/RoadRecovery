@@ -108,7 +108,7 @@ public class PathRestoration {
         }
 
         //TODO
-        if (!graph.consistentChecking()) {
+        if (!GraphUpdating.consistentChecking(graph)) {
             System.err.println("updated graph is inconsistent.");
         }
 

@@ -21,10 +21,6 @@ public class Graph {
     public int[][] pre_node;
     private ArrayList<ArrayList<Integer>> dijstraEdges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
 
-    public boolean consistentChecking() {
-
-        return true;
-    }
 
     private static class NodeDijkstra {
 

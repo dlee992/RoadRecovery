@@ -31,7 +31,6 @@ public class GraphUpdating {
     }
 
     private static void updateNodeAndEdge() {
-        //TODO
         graph.nodes = new ArrayList<>();
         graph.edges = new HashSet<>();
 
@@ -121,7 +120,14 @@ public class GraphUpdating {
     }
 
     private static void updateMutualNode() {
-        //TODO
+        for (Node node:
+             graph.nodes) {
+            node.mutualNode = null;
+            node.tollUnitList = null;
+            node.tollUnitLength = 0;
+            node.mileage = 0;
+        }
+
         try {
             reader = getBufferReader();
         } catch (IOException e) {
@@ -175,7 +181,6 @@ public class GraphUpdating {
     }
 
     private static void updateMoneyMap() {
-        //TODO
         graph.moneyMap.clear();
 
         try {
@@ -198,5 +203,11 @@ public class GraphUpdating {
         }
 
         graph.moneyFlag = true;
+    }
+
+    public static boolean consistentChecking(Graph graph) {
+        //todo
+
+        return true;
     }
 }
