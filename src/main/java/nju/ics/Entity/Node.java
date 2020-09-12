@@ -13,16 +13,24 @@ public class Node implements Cloneable {
     public long mileage;
 
     /* new attributes for money */
-    public List<TollUnit> tollUnitList = null;
+    public List<String> tollUnitList = null;
     public int tollUnitLength;
 
     public Node() {
     }
 
-    //copy a node element except for NodeSource.
-    public Node(String index, String name, NodeType type, Node mutualNode) {
+    public Node(String index) {
         this.index = index;
-        this.name = name;
+    }
+
+    public Node(String index, NodeType type) {
+        this.index = index;
+        this.type = type;
+    }
+
+    //copy a node element except for NodeSource.
+    public Node(String index, NodeType type, Node mutualNode) {
+        this.index = index;
         this.type = type;
         this.mutualNode = mutualNode;
     }

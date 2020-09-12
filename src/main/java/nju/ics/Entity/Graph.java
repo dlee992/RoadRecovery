@@ -12,14 +12,19 @@ public class Graph {
     public boolean moneyFlag = false;
 
     //data structure for Li Da
-    public ArrayList<Node> nodes = new ArrayList<>();
+    public List<Node> nodes = new ArrayList<>();
     public Set<Edge> edges = new HashSet<>();
-    public HashMap<TollAndVehicleType, Long> moneyMap = new HashMap<>();
+    public Map<String, Long> moneyMap = new HashMap<>();
 
     //data structure for Penny
     public int[][] dist;
     public int[][] pre_node;
     private ArrayList<ArrayList<Integer>> dijstraEdges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
+
+    public boolean consistentChecking() {
+
+        return true;
+    }
 
     private static class NodeDijkstra {
 

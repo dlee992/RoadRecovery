@@ -4,7 +4,6 @@ package nju.ics.Main;
 import nju.ics.Algorithm.Algorithm;
 import nju.ics.Algorithm.DPAlgorithm;
 import nju.ics.Entity.*;
-import nju.ics.Tool.ReadExcel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -106,6 +105,11 @@ public class PathRestoration {
 
             //remove curKey and its value from hashmap
             PathRestoration.hashMap.remove(curKey);
+        }
+
+        //TODO
+        if (!graph.consistentChecking()) {
+            System.err.println("updated graph is inconsistent.");
         }
 
         //add the start and end node into original path

@@ -1,33 +1,202 @@
 package nju.ics.Main;
 
-import nju.ics.Entity.Graph;
+import nju.ics.Entity.*;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class GraphUpdating {
 
+    static Graph graph = null;
+    static UpdatedBasicData updatedBasicData = null;
+
+    static ZipFile zipFile = null;
+    static BufferedReader reader = null;
+
+
     public static void updateGraph(Graph graph, UpdatedBasicData updatedBasicData) {
-        if (updatedBasicData.paramType == 1) {
-            updateEdge(graph);
-        }
-        else if (updatedBasicData.paramType == 2) {
-            updateMutualNode(graph);
-        }
-        else if (updatedBasicData.paramType == 3) {
-            updateMoneyMap(graph);
-        }
+        GraphUpdating.graph = graph;
+        GraphUpdating.updatedBasicData = updatedBasicData;
+
+        if (updatedBasicData.paramType == 1)
+            updateNodeAndEdge();
+        else if (updatedBasicData.paramType == 2)
+            updateMutualNode();
+        else if (updatedBasicData.paramType == 3)
+            updateMoneyMap();
     }
 
-    private static void updateEdge(Graph graph) {
+    private static void updateNodeAndEdge() {
         //TODO
+        graph.nodes = new ArrayList<>();
+        graph.edges = new HashSet<>();
+
+        try {
+            reader = getBufferReader();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int rowIndex = 0;
+        while (true) {
+            String line = getLineFromReader();
+            if (line == null) break;
+            if (rowIndex++ < 2) continue;
+            String[] elements = line.split(",");
+            Node startNode = extractNodeAndAddIntoGraph(elements[0], elements[1]);
+            Node endNode = extractNodeAndAddIntoGraph(elements[2], elements[3]);
+            Edge edge = new Edge(startNode, endNode);
+            if (graph.edges.contains(edge)) {
+                System.err.println("this edge has already added into graph");
+                StackTraceElement[] stackList = Thread.currentThread().getStackTrace();
+                for (StackTraceElement stackTrace:
+                        stackList) {
+                    System.err.println(stackTrace);
+                }
+            }
+            else graph.edges.add(edge);
+        }
+
         graph.edgeFlag = true;
+        releaseResources();
     }
 
-    private static void updateMutualNode(Graph graph) {
+    private static void releaseResources() {
+        try {
+            zipFile.close();
+            zipFile = null;
+            reader.close();
+            reader = null;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Node extractNodeAndAddIntoGraph(String nodeIndex, String type) {
+        NodeType nodeType = null;
+        switch (type) {
+            case "0":
+                nodeType = NodeType.NORMALPORTAL;
+                break;
+            case "1":
+                nodeType = NodeType.PROVINCIALPORTAL;
+                break;
+            case "3":
+                nodeType = NodeType.TOLLSTATION;
+                break;
+        }
+        Node newNode = new Node(nodeIndex, nodeType);
+        if (!graph.nodes.contains(newNode))
+            graph.nodes.add(newNode);
+        return newNode;
+    }
+
+    private static BufferedReader getBufferReader() throws IOException {
+        String fullName = updatedBasicData.filePath + File.separator + updatedBasicData.file;
+
+        try {
+            zipFile = new ZipFile(fullName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert zipFile != null;
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+        if (!entries.hasMoreElements()) {
+            System.err.println("not found anything in .zip");
+            StackTraceElement[] stackList = Thread.currentThread().getStackTrace();
+            for (StackTraceElement stackTrace:
+                    stackList) {
+                System.err.println(stackTrace);
+            }
+        }
+
+        ZipEntry entry = entries.nextElement();
+        return new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
+    }
+
+    private static void updateMutualNode() {
         //TODO
+        try {
+            reader = getBufferReader();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int rowIndex = 0;
+        while (true) {
+            String line = getLineFromReader();
+            if (line == null) break;
+            if (rowIndex++ < 2) continue;
+            String[] elements = line.split(",");
+            Node mutualNode1 = new Node(elements[0]);
+            Node mutualNode2 = new Node(elements[2]);
+            if (!graph.nodes.contains(mutualNode1) || !graph.nodes.contains(mutualNode2)) {
+                System.err.println("mutual node not found in graph.");
+            }
+
+            Node realMutualNode1 = graph.nodes.get(graph.nodes.indexOf(mutualNode1));
+            Node realMutualNode2 = graph.nodes.get(graph.nodes.indexOf(mutualNode2));
+            realMutualNode1.mutualNode = realMutualNode2;
+            realMutualNode2.mutualNode = realMutualNode1;
+
+            String[] tollUnits = elements[3].split("\\|");
+            realMutualNode1.tollUnitList = new ArrayList<>();
+            realMutualNode2.tollUnitList = new ArrayList<>();
+            for (String tollUnitIndex:
+                 tollUnits) {
+                realMutualNode1.tollUnitList.add(tollUnitIndex);
+                realMutualNode2.tollUnitList.add(tollUnitIndex);
+            }
+            realMutualNode1.tollUnitLength = realMutualNode2.tollUnitLength = Integer.parseInt(elements[4]);
+            realMutualNode1.mileage = realMutualNode2.mileage = Long.parseLong(elements[5]);
+        }
+
         graph.mutualFlag = true;
     }
 
-    private static void updateMoneyMap(Graph graph) {
+    private static String getLineFromReader() {
+        String line = null;
+        try {
+            assert reader != null;
+            if (!reader.ready()) return null;
+            line = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert line != null;
+        return line;
+    }
+
+    private static void updateMoneyMap() {
         //TODO
+        graph.moneyMap.clear();
+
+        try {
+            reader = getBufferReader();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int rowIndex = 0;
+        while (true) {
+            String line = getLineFromReader();
+            if (line == null) break;
+            if (rowIndex++ < 2) continue;
+            String[] elements = line.split(",");
+            String tollUnitIndex = elements[2];
+            String vehicleType = elements[3];
+            Long fee = Long.parseLong(elements[4]);
+            String combinedKey = tollUnitIndex + vehicleType;
+            graph.moneyMap.put(combinedKey, fee);
+        }
+
         graph.moneyFlag = true;
     }
 }
