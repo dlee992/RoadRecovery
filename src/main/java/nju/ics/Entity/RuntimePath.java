@@ -20,6 +20,10 @@ public class RuntimePath {
         }
     }
 
+    public RuntimePath(List<RuntimeNode> runtimeNodeList) {
+        this.runtimeNodeList = runtimeNodeList;
+    }
+
     public RuntimePath() {}
 
     public String fixedLengthString(String string, int length) {

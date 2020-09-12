@@ -22,6 +22,8 @@ public class DPAlgorithm implements Algorithm {
         double deleteCost = configs.get(2); //4000
         double deleteCost2 = configs.get(3); //2
         double deleteEndCost = configs.get(4); //1000000
+        double threshold_value = 10;
+        // TODO: value of threshold?
         // 保证5个加<1个删 (id9710)
 
         boolean debug = false;
@@ -148,7 +150,41 @@ public class DPAlgorithm implements Algorithm {
                 }
             }
         }
+        List<RuntimeNode> answerNodes = answerPath.runtimeNodeList;
+        for (int length = answerNodes.size(); length > 2; --length) {
+            for (int start = 0; start + length - 1 < answerNodes.size(); ++start) {
+                int end = start + length - 1;
+                // if delta(P_{start:end}, min-cost-path(P_{start}, P_{end})) <= d, then replace P[start:end] with min cost path
+                Path minCostPath = graph
+                    .getMinCostPath(answerNodes.get(start).node, answerNodes.get(end).node, vehicleType);
+                long addNodeNum = answerNodes.stream().filter(x -> x.node.source == ADD).count();
+                long identifyNodeNum = answerNodes.stream().filter(x -> x.node.source == IDENTIFY).count();
+                long modifyNodeNum = answerNodes.stream().filter(x -> x.node.source == MODIFY).count();
+                long deletedNodeNum = originalPathSize - (answerNodes.size() - addNodeNum);
+                long reliability = longestCommonSubsequence(answerNodes.subList(start, end + 1), minCostPath.nodeList);
+                // TODO: how to calculate reliability?
+                if (Math.abs(reliability - minCostPath.getCost(graph.moneyMap, vehicleType)) >= threshold_value) {
+                    RuntimePath newPath = new RuntimePath();
+                    newPath.add(new RuntimePath(answerNodes.subList(0, start)));
+                    newPath.add(new RuntimePath(minCostPath, answerNodes.get(start), answerNodes.get(end)));
+                    newPath.add(new RuntimePath(answerNodes.subList(end + 1, answerNodes.size())));
+                    return newPath;
+                    // TODO: not break, continue and do it again?
+                }
+            }
+        }
         return answerPath; // empty when failed
+    }
+
+    private int longestCommonSubsequence(List a, List b) {
+        int[][] dp = new int[a.size() + 1][b.size() + 1];
+        for (int i = 1; i <= a.size(); ++i) {
+            for (int j = 1; j <= b.size(); ++j) {
+                dp[i][j] = Math.max(dp[i - 1][j - 1] + (a.get(i - 1) == b.get(j - 1) ? 1 : 0),
+                    Math.max(dp[i - 1][j], dp[i][j - 1]));
+            }
+        }
+        return dp[a.size()][b.size()];
     }
 
     /***
