@@ -14,7 +14,7 @@ import java.util.*;
 
 public class PathRestoration {
 
-    private boolean debugging = false;
+    public static boolean debugging = true;
 
     public static Graph graph = new Graph();
     /**

@@ -61,7 +61,12 @@ public class GraphUpdating {
                 }
                 return false;
             }
-            else graph.edges.add(edge);
+            else {
+                graph.edges.add(edge);
+                if (PathRestoration.debugging)
+                    System.out.printf("edgeIndex=%d, startNode=%s, endNode=%s\n",
+                            graph.edges.size(), startNode.index, endNode.index);
+            }
         }
 
         graph.edgeFlag = true;
@@ -157,8 +162,20 @@ public class GraphUpdating {
 
             Node realMutualNode1 = graph.nodes.get(graph.nodes.indexOf(mutualNode1));
             Node realMutualNode2 = graph.nodes.get(graph.nodes.indexOf(mutualNode2));
+
+            if (realMutualNode1.mutualNode != null || realMutualNode2.mutualNode != null) {
+                System.err.printf("one node has already have mutual node\n");
+//                System.err.flush();
+                continue;
+            }
+
             realMutualNode1.mutualNode = realMutualNode2;
             realMutualNode2.mutualNode = realMutualNode1;
+
+            if (PathRestoration.debugging) {
+                System.out.printf("node1=%s, node2=%s\n", realMutualNode1.index, realMutualNode2.index);
+//                System.out.flush();
+            }
 
             String[] tollUnits = elements[3].split("\\|");
             realMutualNode1.tollUnitList = new ArrayList<>();
@@ -212,6 +229,9 @@ public class GraphUpdating {
             Long fee = Long.parseLong(elements[4]);
             String combinedKey = tollUnitIndex + vehicleType;
             graph.moneyMap.put(combinedKey, fee);
+            if (PathRestoration.debugging) {
+                System.out.printf("unit=%s, vehicleType=%s, fee=%d\n", tollUnitIndex, vehicleType, fee);
+            }
         }
 
         graph.moneyFlag = true;
