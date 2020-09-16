@@ -20,5 +20,7 @@ public class RateLoading {
         retJson.put("code", 1);
         retJson.put("description", "已记录更新时间和文件位置");
         return retJson.toString();
+
+        //TODO: when to return failed?
     }
 }

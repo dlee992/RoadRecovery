@@ -221,7 +221,6 @@ public class GraphUpdating {
 
     public static boolean consistentChecking(Graph graph) {
         //todo
-
         return true;
     }
 }
