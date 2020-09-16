@@ -1,2 +1,1 @@
-{"enTime":"","exTime":"","enStationId":"G0002370110070","exStationId":"G0002370110070","gantryIdList":[],"basicDataPath":"basic-data.xls","modifyCost":0.01,"addCost":0.1,"deleteCost":300,"deleteCost2":2,"deleteEndCost":100000}
-{"enTime":"","exTime":"","enStationId":"G0002370110070","exStationId":"G003W370040050","gantryIdList":[],"basicDataPath":"basic-data.xls","modifyCost":0.01,"addCost":0.1,"deleteCost":300,"deleteCost2":2,"deleteEndCost":100000}
+{"enTime":"","exTime":"","enStationId":"G0002370110070","exStationId":"G003W370040050","gantryIdList":[],"modifyCost":0.01,"addCost":0.1,"deleteCost":300,"deleteCost2":2,"deleteEndCost":100000,"vehicleType":1}

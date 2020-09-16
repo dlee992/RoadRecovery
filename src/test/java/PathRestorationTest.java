@@ -19,54 +19,25 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class PathRestorationTest {
 
-    static String basic_data_file_path = "src/test/resources/inputs/basic-data-20200319.xls";
-    static String basic_data_file_path_2 = "src/test/resources/inputs/basic-data-20200416.xls";
-
-    static String test_data_file_path_1  = "src/test/resources/inputs/test-data-with-oracle-20200327.txt";
-    static String test_data_file_path_2  = "src/test/resources/inputs/test-data-with-oracle-2020032702.txt";
-    static String test_data_file_path_3  = "src/test/resources/inputs/ori_6000.txt";
-    static String test_data_file_path_4  = "src/test/resources/inputs/mid_6000.txt";
-    static String test_data_single       = "src/test/resources/inputs/single-test-case.txt";
-
+    static String test_data_single = "src/test/resources/inputs/single-test-case.txt";
     static List<String> originDPResults = new ArrayList<>();
     static int count = 0;
 
     @Parameterized.Parameters(name = "{index}: assertEquals(DPResult, ManualResult)")
     public static Collection<Object> data() throws IOException {
         Collection<Object> retList = new ArrayList<>();
-
-//        readAFile(retList, test_data_file_path_1, false);
-//        readAFile(retList, test_data_file_path_2, false);
-
-//        readAFile(retList, test_data_file_path_3, true);
-//        readAFile(retList, test_data_file_path_4, true);
-
-        readAFile(retList, test_data_single, false);
+        readAFile(retList, test_data_single);
         return retList;
     }
 
-    private static void readAFile(Collection<Object> retList, String test_data_file, boolean broken) throws IOException {
+    private static void readAFile(Collection<Object> retList, String test_data_file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(test_data_file);
         BufferedReader br = new BufferedReader(new InputStreamReader(fileInputStream));
 
         String strLine;
         while ((strLine = br.readLine()) != null) {
             JSONObject jsonObject = new JSONObject(strLine);
-            jsonObject.put("basicDataPath", basic_data_file_path);
-//            jsonObject.put("basicDataPath", basic_data_file_path_2);
             jsonObject.put("index", count);
-//            jsonObject.put("deleteCost", 500);
-
-            //make up with missing attributes in xu and chen's data.
-            if (broken) {
-                jsonObject.put("enTime", "");
-                jsonObject.put("exTime", "");
-                jsonObject.put("modifyCost", 0.01);
-                jsonObject.put("addCost", 0.1);
-                jsonObject.put("deleteCost", 300);
-                jsonObject.put("deleteCost2", 2);
-                jsonObject.put("deleteEndCost", 100000);
-            }
 
             retList.add(jsonObject);
             count++;
@@ -79,7 +50,11 @@ public class PathRestorationTest {
 
     @Test
     public void testPathRestorationWithNewCases()  {
-//        System.out.println("index = " + testCase.getInt("index"));
+        //TODO: load testing data
+        RateLoadingTest rateLoadingTest = new RateLoadingTest();
+        rateLoadingTest.testRateLoading();
+
+        System.out.println("testcase = " + testCase.toString());
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());

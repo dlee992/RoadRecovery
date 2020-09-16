@@ -16,7 +16,7 @@ public class PathRestoration {
 
     private boolean debugging = false;
 
-    public static Graph graph = null;
+    public static Graph graph = new Graph();
     /**
      * when outside told me to update graph metadata, then set @updatedFlag to true;
      * when Penny updated the graph metadata, then set @updatedFlag to false again.
@@ -73,7 +73,7 @@ public class PathRestoration {
             timeList.add(transTime);
         }
 
-        basicDataPath = jsonObj.getString("basicDataPath");
+//        basicDataPath = jsonObj.getString("basicDataPath");
 
         //configuration parameter for DP
         modifyCost    = jsonObj.getDouble("modifyCost");
