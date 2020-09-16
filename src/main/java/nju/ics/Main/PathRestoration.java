@@ -21,8 +21,8 @@ public class PathRestoration {
      * when outside told me to update graph metadata, then set @updatedFlag to true;
      * when Penny updated the graph metadata, then set @updatedFlag to false again.
      */
-    public static boolean updatedFlag = false;
-    public static HashMap<Long, UpdatedBasicData> hashMap = new HashMap<>();
+    static Comparator<UpdatedBasicData> comparator = new UpdatedComparator();
+    public static PriorityQueue<UpdatedBasicData> priorityQueue = new PriorityQueue<>(comparator);
 
     /**
      * input key
@@ -89,29 +89,21 @@ public class PathRestoration {
         configs.add(deleteCost2);
         configs.add(deleteEndCost);
 
-//        vehicleType = jsonObj.getInt("vehicleType");
+        vehicleType = jsonObj.getInt("vehicleType");
 
         //TODO: if new updated time validates, then rebuild the graph
         Long currentDate = getCurrentDate();
-        List<Long> dateList = new ArrayList<>(PathRestoration.hashMap.keySet());
-        Collections.sort(dateList);
-        for (Long curKey:
-             dateList) {
-            if (curKey > currentDate) break;
 
-            //read from the corresponding data to update graph metadata
-            updatedFlag = true;
-            UpdatedBasicData updatedBasicData = PathRestoration.hashMap.get(curKey);
-            if (!GraphUpdating.updateGraph(graph, updatedBasicData)) {
-                System.err.println("Graph updating failed.");
-//                System.exit(-1);
-            }
-
-            //remove curKey and its value from hashmap
-            PathRestoration.hashMap.remove(curKey);
+        //TODO: read all needed metadata from queue
+        UpdatedBasicData current = priorityQueue.peek();
+        while (current != null && current.updatedTime <= currentDate) {
+            current = priorityQueue.poll();
+            assert current != null;
+            GraphUpdating.updateGraph(graph, current);
+            current = priorityQueue.peek();
         }
 
-        //TODO
+        //TODO:
         if (!GraphUpdating.consistentChecking(graph)) {
             System.err.println("updated graph is inconsistent.");
         }
@@ -263,7 +255,7 @@ public class PathRestoration {
     private Node getNode(Graph graph, String gantry, boolean isGantry) {
         Node node = new Node();
         node.index = gantry;
-        if (graph.nodes.indexOf(node) == -1) {
+        if (!graph.nodes.contains(node)) {
             if (isGantry) {
                 System.err.println("[Error] Unknown gantry [" + gantry + "] exists.");
                 updateDescription(gantry);
@@ -279,4 +271,10 @@ public class PathRestoration {
         description.append(gantry);
     }
 
+    private static class UpdatedComparator implements Comparator<UpdatedBasicData> {
+        @Override
+        public int compare(UpdatedBasicData o1, UpdatedBasicData o2) {
+            return o1.updatedTime.compareTo(o2.updatedTime);
+        }
+    }
 }

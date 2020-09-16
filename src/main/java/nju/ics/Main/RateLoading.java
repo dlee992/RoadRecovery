@@ -12,9 +12,9 @@ public class RateLoading {
         updatedBasicData.file      = jsonObj.getString("file");
         updatedBasicData.filePath  = jsonObj.getString("filePath");
         updatedBasicData.paramType = jsonObj.getInt("paramType");
+        updatedBasicData.updatedTime = Long.valueOf(updatedBasicData.file.substring(13, 13+14));
 
-        Long updatedDate = Long.valueOf(updatedBasicData.file.substring(13, 13+14));
-        PathRestoration.hashMap.put(updatedDate, updatedBasicData);
+        PathRestoration.priorityQueue.add(updatedBasicData);
 
         JSONObject retJson = new JSONObject();
         retJson.put("code", 1);

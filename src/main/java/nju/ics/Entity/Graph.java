@@ -14,6 +14,9 @@ public class Graph {
     //data structure for Li Da
     public List<Node> nodes = new ArrayList<>();
     public Set<Edge> edges = new HashSet<>();
+    /**
+     * String in moneyMap is combined by unit + vehicleType
+     */
     public Map<String, Long> moneyMap = new HashMap<>();
 
     //data structure for Penny
