@@ -22,8 +22,6 @@ public class DPAlgorithm implements Algorithm {
         double deleteCost = configs.get(2); //4000
         double deleteCost2 = configs.get(3); //2
         double deleteEndCost = configs.get(4); //1000000
-        double threshold_value = 2;
-        // TODO: value of threshold?
         // 保证5个加<1个删 (id9710)
 
         boolean debug = false;
@@ -150,6 +148,10 @@ public class DPAlgorithm implements Algorithm {
                 }
             }
         }
+
+        double threshold_value = 0.2;
+        // TODO: value of threshold?
+
         List<RuntimeNode> answerNodes = answerPath.runtimeNodeList;
         for (int length = answerNodes.size(); length > 2; --length) {
             for (int start = 0; start + length - 1 < answerNodes.size(); ++start) {
@@ -157,17 +159,25 @@ public class DPAlgorithm implements Algorithm {
                 // if delta(P_{start:end}, min-cost-path(P_{start}, P_{end})) <= d, then replace P[start:end] with min cost path
                 Path minCostPath = graph
                     .getMinCostPath(answerNodes.get(start).node, answerNodes.get(end).node, vehicleType);
-                long addNodeNum = answerNodes.stream().filter(x -> x.node.source == ADD).count();
-                long identifyNodeNum = answerNodes.stream().filter(x -> x.node.source == IDENTIFY).count();
-                long modifyNodeNum = answerNodes.stream().filter(x -> x.node.source == MODIFY).count();
-                long deletedNodeNum = originalPathSize - (answerNodes.size() - addNodeNum);
-                long reliability = longestCommonSubsequence(answerNodes.subList(start, end + 1), minCostPath.nodeList);
+                // add + identify + modify == answerNodes.subList(start, end + 1).size() == length
+                long addNodeNum = answerNodes.subList(start, end + 1).stream().filter(x -> x.node.source == ADD)
+                    .count();
+                long identifyNodeNum = answerNodes.subList(start, end + 1).stream()
+                    .filter(x -> x.node.source == IDENTIFY).count();
+                long modifyNodeNum = answerNodes.subList(start, end + 1).stream().filter(x -> x.node.source == MODIFY)
+                    .count();
+                double reliability =
+                    (double) longestCommonSubsequence(answerNodes.subList(start, end + 1), minCostPath.nodeList) / Math
+                        .min(minCostPath.nodeList.size(), length) + (double) identifyNodeNum / length;
                 // TODO: how to calculate reliability?
-                if (Math.abs(reliability) <= threshold_value) {
+                if (reliability <= threshold_value) {
+                    answerPath.print("original DP result");
+                    System.out.println("Fix by min cost");
                     RuntimePath newPath = new RuntimePath();
                     newPath.add(new RuntimePath(answerNodes.subList(0, start)));
                     newPath.add(new RuntimePath(minCostPath, answerNodes.get(start), answerNodes.get(end)));
                     newPath.add(new RuntimePath(answerNodes.subList(end + 1, answerNodes.size())));
+//                    assert(newPath.getCost(graph.moneyMap, vehicleType) <= answerPath.getCost(graph.moneyMap, vehicleType));
                     return newPath;
                     // TODO: not break, continue and do it again?
                 }

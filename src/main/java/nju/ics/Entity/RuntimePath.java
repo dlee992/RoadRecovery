@@ -2,6 +2,7 @@ package nju.ics.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static nju.ics.Entity.NodeSource.IDENTIFY;
 
@@ -48,6 +49,10 @@ public class RuntimePath {
             length += runtimeNodeList.get(i).node.mileage;
         }
         return length;
+    }
+
+    public long getCost(Map<String, Long> moneyMap, int vehicleType) {
+        return runtimeNodeList.stream().mapToLong(i -> i.node.getNodeTotalFee(moneyMap, vehicleType)).sum();
     }
 
     public void print(String desc) {
