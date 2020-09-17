@@ -41,7 +41,7 @@ public class Node implements Cloneable {
         long feeSum = 0;
         for (String tollUnitIndex:
              tollUnitList) {
-            String mapKey = tollUnitIndex + String.valueOf(vehicleType);
+            String mapKey = tollUnitIndex + vehicleType;
             Long fee = moneyMap.get(mapKey);
             feeSum += fee;
         }

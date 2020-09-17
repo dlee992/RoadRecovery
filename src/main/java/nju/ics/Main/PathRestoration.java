@@ -96,11 +96,17 @@ public class PathRestoration {
 
         //TODO: read all needed metadata from queue
         UpdatedBasicData current = priorityQueue.peek();
+
+        boolean updated = false;
         while (current != null && current.updatedTime <= currentDate) {
             current = priorityQueue.poll();
             assert current != null;
             GraphUpdating.updateGraph(graph, current);
+            updated = true;
             current = priorityQueue.peek();
+        }
+        if (updated) {
+            graph.buildAllShortestPathByDijkstra();
         }
 
         //TODO:
