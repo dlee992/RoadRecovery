@@ -24,8 +24,8 @@ public class PathRestorationTest {
     @Parameterized.Parameters(name = "{index}: assertEquals(DPResult, ManualResult)")
     public static Collection<Object> data() throws IOException {
         Collection<Object> retList = new ArrayList<>();
-//        readAFile(retList, test_data);
-        readBFile(retList, test_data_single);
+        readAFile(retList, test_data);
+//        readBFile(retList, test_data_single);
         return retList;
     }
 
@@ -59,19 +59,21 @@ public class PathRestorationTest {
             if (data[2].charAt(0) != '(') {
                 String gantries = data[2];
                 int index = 0;
-                StringBuilder formalGantries = new StringBuilder(data[0]);
+
+                JSONArray jsonArray = new JSONArray();
                 while (index < gantries.length()) {
-                    formalGantries.append('|').append(gantries.substring(index, index + 6));
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("gantryHex", gantries.substring(index, index+6));
+                    jsonObject1.put("transTime", "");
+                    jsonArray.put(jsonObject1);
                     index += 6;
                 }
-                formalGantries.append('|').append(data[1]);
-                jsonObject.put("manualResult", formalGantries.toString());
 
                 //{"enTime":"","exTime":"","enStationId":"G0002370110070","exStationId":"G003W370040050","gantryIdList":[],
                 // "modifyCost":0.01,"addCost":0.1,"deleteCost":300,"deleteCost2":2,"deleteEndCost":100000,"vehicleType":1}
                 jsonObject.put("enTime", "");
                 jsonObject.put("exTime", "");
-                JSONArray jsonArray = new JSONArray();
+
                 jsonObject.put("gantryIdList", jsonArray);
                 jsonObject.put("modifyCost", 0.01);
                 jsonObject.put("addCost", 0.1);
@@ -80,6 +82,7 @@ public class PathRestorationTest {
                 jsonObject.put("deleteEndCost", 100000);
                 jsonObject.put("vehicleType", 1);
 
+                jsonObject.put("manualResult", "");
                 retList.add(jsonObject);
                 count++;
             }

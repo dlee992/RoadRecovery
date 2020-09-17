@@ -6,7 +6,7 @@
 
     <groupId>icsnju</groupId>
     <artifactId>RoadRecovery</artifactId>
-    <version>20200418</version>
+    <version>20200917</version>
     <build>
         <plugins>
             <plugin>
@@ -36,18 +36,6 @@
 
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>4.1.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>4.1.1</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
             <groupId>org.json</groupId>
