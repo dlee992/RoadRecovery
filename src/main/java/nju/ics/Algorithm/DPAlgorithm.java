@@ -22,7 +22,7 @@ public class DPAlgorithm implements Algorithm {
         double deleteCost = configs.get(2); //4000
         double deleteCost2 = configs.get(3); //2
         double deleteEndCost = configs.get(4); //1000000
-        double threshold_value = 10;
+        double threshold_value = 2;
         // TODO: value of threshold?
         // 保证5个加<1个删 (id9710)
 
@@ -163,7 +163,7 @@ public class DPAlgorithm implements Algorithm {
                 long deletedNodeNum = originalPathSize - (answerNodes.size() - addNodeNum);
                 long reliability = longestCommonSubsequence(answerNodes.subList(start, end + 1), minCostPath.nodeList);
                 // TODO: how to calculate reliability?
-                if (Math.abs(reliability - minCostPath.getCost(graph.moneyMap, vehicleType)) >= threshold_value) {
+                if (Math.abs(reliability) <= threshold_value) {
                     RuntimePath newPath = new RuntimePath();
                     newPath.add(new RuntimePath(answerNodes.subList(0, start)));
                     newPath.add(new RuntimePath(minCostPath, answerNodes.get(start), answerNodes.get(end)));
@@ -176,11 +176,11 @@ public class DPAlgorithm implements Algorithm {
         return answerPath; // empty when failed
     }
 
-    private int longestCommonSubsequence(List a, List b) {
+    private int longestCommonSubsequence(List<RuntimeNode> a, List<Node> b) {
         int[][] dp = new int[a.size() + 1][b.size() + 1];
         for (int i = 1; i <= a.size(); ++i) {
             for (int j = 1; j <= b.size(); ++j) {
-                dp[i][j] = Math.max(dp[i - 1][j - 1] + (a.get(i - 1) == b.get(j - 1) ? 1 : 0),
+                dp[i][j] = Math.max(dp[i - 1][j - 1] + (a.get(i - 1).node.equals(b.get(j - 1)) ? 1 : 0),
                     Math.max(dp[i - 1][j], dp[i][j - 1]));
             }
         }
