@@ -164,7 +164,7 @@ public class GraphUpdating {
             Node realMutualNode2 = graph.nodes.get(graph.nodes.indexOf(mutualNode2));
 
             if (realMutualNode1.mutualNode != null || realMutualNode2.mutualNode != null) {
-                System.err.printf("one node has already have mutual node\n");
+//                System.err.printf("one node has already have mutual node\n");
 //                System.err.flush();
                 continue;
             }

@@ -38,7 +38,10 @@ public class Node implements Cloneable {
 
     //For Penny to call
     public Long getNodeTotalFee(Map<String, Long> moneyMap, int vehicleType) {
+        if (type == NodeType.TOLLSTATION) return 0L;
+
         long feeSum = 0;
+//        System.err.printf("node index=%s\n", index);
         for (String tollUnitIndex:
              tollUnitList) {
             String mapKey = tollUnitIndex + vehicleType;

@@ -14,7 +14,7 @@ import java.util.*;
 
 public class PathRestoration {
 
-    public static boolean debugging = true;
+    public static boolean debugging = false;
 
     public static Graph graph = new Graph();
     /**
@@ -47,7 +47,7 @@ public class PathRestoration {
      * @param inputJson each element of an input path in JSON format
      * @return inputJson.toString()
      */
-    public String pathRestorationMethod(String inputJson)  {
+    public String pathRestorationMethod(String inputJson) {
         //analyze JSON data
         JSONObject jsonObj = new JSONObject(inputJson);
 
@@ -92,8 +92,8 @@ public class PathRestoration {
         vehicleType = jsonObj.getInt("vehicleType");
 
         //TODO: if new updated time validates, then rebuild the graph
-        Long currentDate = getCurrentDate();
-
+//        Long currentDate = getCurrentDate();
+        Long currentDate = 20201101000000L;
         //TODO: read all needed metadata from queue
         UpdatedBasicData current = priorityQueue.peek();
 
@@ -102,6 +102,7 @@ public class PathRestoration {
             current = priorityQueue.poll();
             assert current != null;
             GraphUpdating.updateGraph(graph, current);
+            System.out.println("Update metadata!!");
             updated = true;
             current = priorityQueue.peek();
         }
