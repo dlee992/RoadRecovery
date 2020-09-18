@@ -91,8 +91,8 @@ public class PathRestoration {
         vehicleType = jsonObj.getInt("vehicleType");
 
         //TODO: if new updated time validates, then rebuild the graph
-//        Long currentDate = getCurrentDate();
-        Long currentDate = 20201101000000L;
+        Long currentDate = getCurrentDate();
+//        Long currentDate = 20201101000000L;
         //TODO: read all needed metadata from queue
         UpdatedBasicData current = priorityQueue.peek();
 
