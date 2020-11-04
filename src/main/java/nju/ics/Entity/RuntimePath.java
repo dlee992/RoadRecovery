@@ -56,16 +56,25 @@ public class RuntimePath {
     }
 
     public void print(String desc) {
+        int length = 15;
         System.out.println("---"+ desc +" begin---");
         System.out.println("---length = "+ runtimeNodeList.size() +" ---");
         for (RuntimeNode runtimeNode : runtimeNodeList) {
-            System.out.println(fixedLengthString(runtimeNode.node.index, 20) + " " +
-                    fixedLengthString(runtimeNode.node.source.toString(), 20)+ " " +
-                    fixedLengthString(runtimeNode.transTime, 20) + " " +
-                    fixedLengthString(String.valueOf(runtimeNode.node.mileage), 20) + " " +
-                    fixedLengthString(runtimeNode.node.name, 20));
+            System.out.println(fixedLengthString(runtimeNode.node.index, length) + " " +
+                    fixedLengthString(runtimeNode.node.source.toString(), length)+ " " +
+                    fixedLengthString(runtimeNode.transTime, length) + " " +
+                    fixedLengthString(String.valueOf(runtimeNode.node.mileage), length) + " " +
+                    fixedLengthString(runtimeNode.node.name, length));
         }
         System.out.println("---path end---");
+    }
+
+    public String[] getStringArray() {
+        String[] arrays = new String[runtimeNodeList.size()-2];
+        for (int i = 1; i < runtimeNodeList.size()-1; i++) {
+            arrays[i-1] = runtimeNodeList.get(i).node.index;
+        }
+        return arrays;
     }
 
     public void add(RuntimePath path2) {

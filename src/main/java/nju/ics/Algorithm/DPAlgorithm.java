@@ -148,6 +148,8 @@ public class DPAlgorithm implements Algorithm {
                 }
             }
         }
+        // for debugging
+//        answerPath.print("middle phase");
 
         double threshold_value = 0.2;
         // TODO: value of threshold?

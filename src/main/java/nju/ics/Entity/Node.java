@@ -37,15 +37,25 @@ public class Node implements Cloneable {
     }
 
     //For Penny to call
-    public Long getNodeTotalFee(Map<String, Long> moneyMap, int vehicleType) {
+    public Long getNodeTotalFee(Map<String, Long> moneyMap, int vehicleType)
+            throws IllegalArgumentException {
         if (type == NodeType.TOLLSTATION) return 0L;
 
         long feeSum = 0;
 //        System.err.printf("node index=%s\n", index);
+        if (tollUnitList == null) {
+            throw new IllegalArgumentException("this gantry doesn't contain any toll unit.");
+        }
         for (String tollUnitIndex:
              tollUnitList) {
             String mapKey = tollUnitIndex + vehicleType;
             Long fee = moneyMap.get(mapKey);
+            if (fee == null) {
+                System.err.printf("gantryIndex = %s, tollUnitIndex = %s, vehicleType = %d\n",
+                        index, tollUnitIndex, vehicleType);
+                throw new IllegalArgumentException(
+                        "this basic dataset (403) doesn't contain this very toll unit.");
+            }
             feeSum += fee;
         }
         return feeSum;

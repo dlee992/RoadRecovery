@@ -174,6 +174,7 @@ public class PathRestoration {
 //        System.out.println("原路径长度=" + originalPath.runtimeNodeList.size());
         Algorithm algorithm = new DPAlgorithm();
         recoveredPath = algorithm.execute(graph, originalPath, configs, vehicleType);
+//        recoveredPath.print("recovered path");
 
         //generate JSON data for return
         JSONObject returnJsonObj = getReturnedJsonObject(recoveredPath, "Unknown reason");

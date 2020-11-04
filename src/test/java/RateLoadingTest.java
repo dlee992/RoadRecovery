@@ -7,12 +7,9 @@ public class RateLoadingTest {
 
     @Test
     public void testRateLoading() {
-        String file1    = "401_20090201_20200506000000.txt.zip";
-        String file2    = "402_20081901_20200819205649.txt.zip";
-        String file3    = "403_20082001_20200820092752.txt.zip";
-        String file4    = "401_20090201_20201001000000.txt.zip";
-        String file5    = "402_20081901_20201001000000.txt.zip";
-        String file6    = "403_20082001_20201002092752.txt.zip";
+        String file1    = "401_20103001_20201101000000.txt.zip";
+        String file2    = "402_20102101_20201101000000.txt.zip";
+        String file3    = "403_20102201_20201101000000.txt.zip";
 
         String filePath = "src/test/resources/inputs";
 
@@ -36,27 +33,6 @@ public class RateLoadingTest {
 
         jsonObject = new JSONObject();
         jsonObject.put("file",      file3);
-        jsonObject.put("filePath",  filePath);
-        jsonObject.put("paramType", 3);
-        rateLoading = new RateLoading();
-        ret = rateLoading.rateLoadingMethod(jsonObject.toString());
-
-        jsonObject = new JSONObject();
-        jsonObject.put("file",      file4);
-        jsonObject.put("filePath",  filePath);
-        jsonObject.put("paramType", 1);
-        rateLoading = new RateLoading();
-        ret = rateLoading.rateLoadingMethod(jsonObject.toString());
-
-        jsonObject = new JSONObject();
-        jsonObject.put("file",      file5);
-        jsonObject.put("filePath",  filePath);
-        jsonObject.put("paramType", 2);
-        rateLoading = new RateLoading();
-        ret = rateLoading.rateLoadingMethod(jsonObject.toString());
-
-        jsonObject = new JSONObject();
-        jsonObject.put("file",      file6);
         jsonObject.put("filePath",  filePath);
         jsonObject.put("paramType", 3);
         rateLoading = new RateLoading();

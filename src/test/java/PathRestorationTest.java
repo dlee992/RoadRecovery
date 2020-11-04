@@ -1,12 +1,10 @@
 import nju.ics.Main.PathRestoration;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import static org.junit.Assert.assertEquals;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,19 +15,21 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class PathRestorationTest {
 
-    static String test_data_single = "src/test/resources/inputs/single-test-case.txt";
-    static String test_data = "src/test/resources/inputs/testdata.txt";
+    static String test_data = "src/test/resources/inputs/test-data.txt";
     static int count = 0;
+
+    @Parameterized.Parameter
+    public JSONObject testCase;
 
     @Parameterized.Parameters(name = "{index}: assertEquals(DPResult, ManualResult)")
     public static Collection<Object> data() throws IOException {
         Collection<Object> retList = new ArrayList<>();
-        readAFile(retList, test_data);
-//        readBFile(retList, test_data_single);
+        readBFile(retList, test_data);
         return retList;
     }
 
-    private static void readBFile(Collection<Object> retList, String test_data_file) throws IOException {
+    private static void readBFile(Collection<Object> retList, String test_data_file)
+            throws IOException {
         FileInputStream fileInputStream = new FileInputStream(test_data_file);
         BufferedReader br = new BufferedReader(new InputStreamReader(fileInputStream));
 
@@ -42,60 +42,8 @@ public class PathRestorationTest {
         fileInputStream.close();
     }
 
-    private static void readAFile(Collection<Object> retList, String test_data_file) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(test_data_file);
-        BufferedReader br = new BufferedReader(new InputStreamReader(fileInputStream));
-
-        String strLine;
-        while ((strLine = br.readLine()) != null) {
-//            System.out.printf("strLine=%s\n", strLine);
-            String[] data = strLine.split(",");
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("index", count);
-            jsonObject.put("enStationId", data[0]);
-            jsonObject.put("exStationId", data[1]);
-
-            if (data[2].charAt(0) != '(') {
-                String gantries = data[2];
-                int index = 0;
-
-                JSONArray jsonArray = new JSONArray();
-                while (index < gantries.length()) {
-                    JSONObject jsonObject1 = new JSONObject();
-                    jsonObject1.put("gantryHex", gantries.substring(index, index+6));
-                    jsonObject1.put("transTime", "");
-                    jsonArray.put(jsonObject1);
-                    index += 6;
-                }
-
-                //{"enTime":"","exTime":"","enStationId":"G0002370110070","exStationId":"G003W370040050","gantryIdList":[],
-                // "modifyCost":0.01,"addCost":0.1,"deleteCost":300,"deleteCost2":2,"deleteEndCost":100000,"vehicleType":1}
-                jsonObject.put("enTime", "");
-                jsonObject.put("exTime", "");
-
-                jsonObject.put("gantryIdList", jsonArray);
-                jsonObject.put("modifyCost", 0.01);
-                jsonObject.put("addCost", 0.1);
-                jsonObject.put("deleteCost", 300);
-                jsonObject.put("deleteCost2", 2);
-                jsonObject.put("deleteEndCost", 100000);
-                jsonObject.put("vehicleType", 1);
-
-                jsonObject.put("manualResult", "");
-                retList.add(jsonObject);
-                count++;
-            }
-        }
-        fileInputStream.close();
-    }
-
-    @Parameterized.Parameter
-    public JSONObject testCase;
-
     @Test
-    public void testPathRestorationWithNewCases()  {
-        //TODO: load testing data
+    public void testPathRestorationWithNewCases() {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
         rateLoadingTest.testRateLoading();
 
@@ -105,13 +53,10 @@ public class PathRestorationTest {
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
         try {
             if (pathRestoration.recoveredPath != null) {
-                String DPResult = pathRestoration.recoveredPath.getLiteralPath();
-                pathRestoration.recoveredPath.print("DP result");
-//                System.out.println(DPResult);
-                System.out.println(ret);
-                String manualResult = testCase.getString("manualResult");
-                System.out.println(manualResult);
-//                assertEquals(manualResult, DPResult);
+                pathRestoration.recoveredPath.print("cost fix result");
+                String[] intellijResult = pathRestoration.recoveredPath.getStringArray();
+                String[] manualResult = testCase.getString("manualResult").split("\\|");
+                Assert.assertArrayEquals(manualResult, intellijResult);
             }
             else {
                 System.err.println(ret);
