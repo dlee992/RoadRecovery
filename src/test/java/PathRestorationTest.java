@@ -1,3 +1,5 @@
+import nju.ics.Entity.Edge;
+import nju.ics.Entity.Node;
 import nju.ics.Main.PathRestoration;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +58,9 @@ public class PathRestorationTest {
                 pathRestoration.recoveredPath.print("cost fix result");
                 String[] intellijResult = pathRestoration.recoveredPath.getStringArray();
                 String[] manualResult = testCase.getString("manualResult").split("\\|");
+                Assert.assertTrue(isValid(manualResult,
+                        testCase.getString("enStationId"),
+                        testCase.getString("exStationId")));
                 Assert.assertArrayEquals(manualResult, intellijResult);
             }
             else {
@@ -65,5 +70,35 @@ public class PathRestorationTest {
         catch (JSONException Exp) {
             //do nothing.
         }
+    }
+
+    private boolean isValid(String[] manualResult, String enStationId, String exStationId) {
+        int length = manualResult.length;
+        if (!connected(enStationId, manualResult[0]) || !connected(manualResult[length - 1], exStationId)) {
+            System.err.println("start or end not connected");
+            return false;
+        }
+        for (int i = 0; i < length-1; i++) {
+            if (!connected(manualResult[i], manualResult[i + 1])) {
+                System.err.printf("%s is not connected with %s\n", manualResult[i], manualResult[i+1]);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean connected(String prevId, String nextId) {
+        List<Node> nodes = PathRestoration.graph.nodes;
+        int index = nodes.indexOf(new Node(prevId));
+        if (index < 0) return false;
+        Node prevNode = nodes.get(index);
+        index = nodes.indexOf(new Node(nextId));
+        if (index < 0) return false;
+        Node nextNode = nodes.get(index);
+        if (prevNode == null || nextNode == null) return true;
+
+        Edge edge = new Edge(prevNode, nextNode);
+        if (PathRestoration.graph.edges.contains(edge)) return false;
+        return true;
     }
 }
