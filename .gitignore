@@ -34,3 +34,4 @@ src/test/resources/Deprecated/
 
 # temp log file
 test-data-calculated-tmp.csv
+temp.txt

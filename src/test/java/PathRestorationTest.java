@@ -74,10 +74,15 @@ public class PathRestorationTest {
 
     private boolean isValid(String[] manualResult, String enStationId, String exStationId) {
         int length = manualResult.length;
-        if (!connected(enStationId, manualResult[0]) || !connected(manualResult[length - 1], exStationId)) {
-            System.err.println("start or end not connected");
+        if (!connected(enStationId, manualResult[0])) {
+            System.err.println("start not connected");
             return false;
         }
+        if (!connected(manualResult[length - 1], exStationId)) {
+            System.err.println("end not connected");
+            return false;
+        }
+
         for (int i = 0; i < length-1; i++) {
             if (!connected(manualResult[i], manualResult[i + 1])) {
                 System.err.printf("%s is not connected with %s\n", manualResult[i], manualResult[i+1]);
@@ -90,12 +95,21 @@ public class PathRestorationTest {
     private boolean connected(String prevId, String nextId) {
         List<Node> nodes = PathRestoration.graph.nodes;
         int index = nodes.indexOf(new Node(prevId));
-        if (index < 0) return false;
+        if (index < 0) {
+//            System.err.println("first node not exists.");
+            return false;
+        }
         Node prevNode = nodes.get(index);
+
         index = nodes.indexOf(new Node(nextId));
-        if (index < 0) return false;
+        if (index < 0) {
+//            System.err.printf("second node %s not exists.", nextId);
+            return false;
+        }
         Node nextNode = nodes.get(index);
         if (prevNode == null || nextNode == null) return true;
+
+//        System.err.println("two nodes exist.");
 
         Edge edge = new Edge(prevNode, nextNode);
         if (PathRestoration.graph.edges.contains(edge)) return false;
