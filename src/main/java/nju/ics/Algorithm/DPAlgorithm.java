@@ -154,43 +154,43 @@ public class DPAlgorithm implements Algorithm {
         // for debugging
 //        answerPath.print("middle phase");
 
-        double threshold_value = 0.5;
-        // TODO: value of threshold?
-
-        List<RuntimeNode> answerNodes = answerPath.runtimeNodeList;
-        for (int length = answerNodes.size(); length > 2; --length) {
-            for (int start = 0; start + length - 1 < answerNodes.size(); ++start) {
-                int end = start + length - 1;
-                // if delta(P_{start:end}, min-cost-path(P_{start}, P_{end})) <= d, then replace P[start:end] with min cost path
-                if (answerNodes.get(start).node.source != IDENTIFY || answerNodes.get(end).node.source != IDENTIFY) {
-                    continue;
-                }
-                Path minCostPath = graph
-                    .getMinCostPath(answerNodes.get(start).node, answerNodes.get(end).node, vehicleType);
-                // add + identify + modify == answerNodes.subList(start, end + 1).size() == length
-                long addNodeNum = answerNodes.subList(start, end + 1).stream().filter(x -> x.node.source == ADD)
-                    .count();
-                long identifyNodeNum = answerNodes.subList(start, end + 1).stream()
-                    .filter(x -> x.node.source == IDENTIFY).count();
-                long modifyNodeNum = answerNodes.subList(start, end + 1).stream().filter(x -> x.node.source == MODIFY)
-                    .count();
-                int lcs = longestCommonSubsequence(answerNodes.subList(start, end + 1), minCostPath.nodeList);
-                double reliability = (double) lcs / length * 0.8 + (double) (identifyNodeNum - 2) / (length - 2) * 0.2;
-                // TODO: how to calculate reliability?
-//                System.out.println("reliability(" + start + "," + end + ") = " + reliability);
-                if (reliability < threshold_value) {
-//                    System.out.println("Fix by min cost");
-                    RuntimePath newPath = new RuntimePath();
-                    newPath.add(new RuntimePath(answerNodes.subList(0, start)));
-                    newPath.add(new RuntimePath(minCostPath, answerNodes.get(start), answerNodes.get(end)));
-                    newPath.add(new RuntimePath(answerNodes.subList(end + 1, answerNodes.size())));
-//                    assert(newPath.getCost(graph.moneyMap, vehicleType) <= answerPath.getCost(graph.moneyMap, vehicleType));
-//                    newPath.print("fix");
-                    return newPath;
-                    // TODO: not break, continue and do it again?
-                }
-            }
-        }
+//        double threshold_value = 0.5;
+//        // TODO: value of threshold?
+//
+//        List<RuntimeNode> answerNodes = answerPath.runtimeNodeList;
+//        for (int length = answerNodes.size(); length > 2; --length) {
+//            for (int start = 0; start + length - 1 < answerNodes.size(); ++start) {
+//                int end = start + length - 1;
+//                // if delta(P_{start:end}, min-cost-path(P_{start}, P_{end})) <= d, then replace P[start:end] with min cost path
+//                if (answerNodes.get(start).node.source != IDENTIFY || answerNodes.get(end).node.source != IDENTIFY) {
+//                    continue;
+//                }
+//                Path minCostPath = graph
+//                    .getMinCostPath(answerNodes.get(start).node, answerNodes.get(end).node, vehicleType);
+//                // add + identify + modify == answerNodes.subList(start, end + 1).size() == length
+//                long addNodeNum = answerNodes.subList(start, end + 1).stream().filter(x -> x.node.source == ADD)
+//                    .count();
+//                long identifyNodeNum = answerNodes.subList(start, end + 1).stream()
+//                    .filter(x -> x.node.source == IDENTIFY).count();
+//                long modifyNodeNum = answerNodes.subList(start, end + 1).stream().filter(x -> x.node.source == MODIFY)
+//                    .count();
+//                int lcs = longestCommonSubsequence(answerNodes.subList(start, end + 1), minCostPath.nodeList);
+//                double reliability = (double) lcs / length * 0.8 + (double) (identifyNodeNum - 2) / (length - 2) * 0.2;
+//                // TODO: how to calculate reliability?
+////                System.out.println("reliability(" + start + "," + end + ") = " + reliability);
+//                if (reliability < threshold_value) {
+////                    System.out.println("Fix by min cost");
+//                    RuntimePath newPath = new RuntimePath();
+//                    newPath.add(new RuntimePath(answerNodes.subList(0, start)));
+//                    newPath.add(new RuntimePath(minCostPath, answerNodes.get(start), answerNodes.get(end)));
+//                    newPath.add(new RuntimePath(answerNodes.subList(end + 1, answerNodes.size())));
+////                    assert(newPath.getCost(graph.moneyMap, vehicleType) <= answerPath.getCost(graph.moneyMap, vehicleType));
+////                    newPath.print("fix");
+//                    return newPath;
+//                    // TODO: not break, continue and do it again?
+//                }
+//            }
+//        }
         return answerPath; // empty when failed
     }
 
