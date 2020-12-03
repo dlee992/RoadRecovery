@@ -179,7 +179,7 @@ public class DPAlgorithm implements Algorithm {
                 // TODO: how to calculate reliability?
 //                System.out.println("reliability(" + start + "," + end + ") = " + reliability);
                 if (reliability < threshold_value) {
-                    System.out.println("Fix by min cost");
+//                    System.out.println("Fix by min cost");
                     RuntimePath newPath = new RuntimePath();
                     newPath.add(new RuntimePath(answerNodes.subList(0, start)));
                     newPath.add(new RuntimePath(minCostPath, answerNodes.get(start), answerNodes.get(end)));

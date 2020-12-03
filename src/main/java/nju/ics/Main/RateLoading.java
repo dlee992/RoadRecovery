@@ -15,7 +15,8 @@ public class RateLoading {
         updatedBasicData.paramType = jsonObj.getInt("paramType");
         updatedBasicData.updatedTime = Long.valueOf(updatedBasicData.file.substring(13, 13+14));
 
-        PathRestoration.priorityQueue.add(updatedBasicData);
+        PathRestoration.updated = true;
+        PathRestoration.dataArray[updatedBasicData.paramType -1] = updatedBasicData;
 
         JSONObject retJson = new JSONObject();
         retJson.put("code", 1);

@@ -56,17 +56,21 @@ public class RuntimePath {
     }
 
     public void print(String desc) {
-        int length = 15;
-        System.out.println("---"+ desc +" begin---");
-        System.out.println("---length = "+ runtimeNodeList.size() +" ---");
+        int length = 20;
+        System.out.println("---"+ desc +" begin: path length = "+ runtimeNodeList.size() +" ---");
+        System.out.println(fixedLengthString("node index", length) + " " +
+                fixedLengthString("node origin", length)+ " " +
+                fixedLengthString("node name", length) + " " +
+                fixedLengthString("node mileage", length) + " " +
+                fixedLengthString("node timestamp", length));
         for (RuntimeNode runtimeNode : runtimeNodeList) {
             System.out.println(fixedLengthString(runtimeNode.node.index, length) + " " +
                     fixedLengthString(runtimeNode.node.source.toString(), length)+ " " +
-                    fixedLengthString(runtimeNode.transTime, length) + " " +
+                    fixedLengthString(runtimeNode.node.name, length) + " " +
                     fixedLengthString(String.valueOf(runtimeNode.node.mileage), length) + " " +
-                    fixedLengthString(runtimeNode.node.name, length));
+                    fixedLengthString(runtimeNode.transTime, length));
         }
-        System.out.println("---path end---");
+        System.out.println("---"+ desc +" end---");
     }
 
     public String[] getStringArray() {

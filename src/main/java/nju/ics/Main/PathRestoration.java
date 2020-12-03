@@ -16,22 +16,16 @@ public class PathRestoration {
     public static boolean debugging = false;
 
     public static Graph graph = new Graph();
-    /**
-     * when outside told me to update graph metadata, then set @updatedFlag to true;
-     * when Penny updated the graph metadata, then set @updatedFlag to false again.
-     */
-    static Comparator<UpdatedBasicData> comparator = new UpdatedComparator();
-    public static PriorityQueue<UpdatedBasicData> priorityQueue = new PriorityQueue<>(comparator);
+
+    public static boolean updated = false;
+    public static UpdatedBasicData[] dataArray = new UpdatedBasicData[3];
 
     /**
      * input key
      */
     String enStationId, exStationId;
     String enTime, exTime;
-    String basicDataPath;
-
     double addCost, deleteCost, deleteCost2, modifyCost, deleteEndCost;
-
     int vehicleType;
 
     StringBuilder description = new StringBuilder("Unknown gantry: ");
@@ -90,26 +84,22 @@ public class PathRestoration {
 
         vehicleType = jsonObj.getInt("vehicleType");
 
-        //TODO: if new updated time validates, then rebuild the graph
-        Long currentDate = getCurrentDate();
-//        Long currentDate = 20201101000000L;
-        //TODO: read all needed metadata from queue
-        UpdatedBasicData current = priorityQueue.peek();
-
-        boolean updated = false;
-        while (current != null && current.updatedTime <= currentDate) {
-            current = priorityQueue.poll();
-            assert current != null;
-            GraphUpdating.updateGraph(graph, current);
-            System.out.printf("[DEBUG] Update metadata at time %d\n", current.updatedTime);
-            updated = true;
-            current = priorityQueue.peek();
-        }
+        //TODO: if updated, then rebuild the graph
         if (updated) {
-            graph.buildAllShortestPathByDijkstra();
+            if (dataArray[0] != null && dataArray[1] != null && dataArray[2] != null) {
+                for (UpdatedBasicData data :
+                        dataArray) {
+                    GraphUpdating.updateGraph(graph, data);
+                }
+                graph.buildAllShortestPathByDijkstra();
+                updated = false;
+            }
         }
 
-        //TODO:
+        if (updated) {
+            System.err.println("Graph need updating, should not process new recovery data.");
+        }
+        //TODO: check graph consistency
         if (!GraphUpdating.consistentChecking(graph)) {
             System.err.println("updated graph is inconsistent.");
         }

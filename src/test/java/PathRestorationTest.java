@@ -49,7 +49,7 @@ public class PathRestorationTest {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
         rateLoadingTest.testRateLoading();
 
-        System.out.println("testcase = " + testCase.toString());
+//        System.out.println("testcase = " + testCase.toString());
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
