@@ -1,5 +1,6 @@
 package nju.ics.Main;
 
+import nju.ics.Entity.UpdatedBasicData;
 import org.json.JSONObject;
 
 public class RateLoading {

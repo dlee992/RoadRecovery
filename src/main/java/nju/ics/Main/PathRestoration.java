@@ -101,7 +101,7 @@ public class PathRestoration {
             current = priorityQueue.poll();
             assert current != null;
             GraphUpdating.updateGraph(graph, current);
-            System.out.println("Update metadata!!");
+            System.out.printf("[DEBUG] Update metadata at time %d\n", current.updatedTime);
             updated = true;
             current = priorityQueue.peek();
         }
@@ -281,7 +281,9 @@ public class PathRestoration {
     private static class UpdatedComparator implements Comparator<UpdatedBasicData> {
         @Override
         public int compare(UpdatedBasicData o1, UpdatedBasicData o2) {
-            return o1.updatedTime.compareTo(o2.updatedTime);
+            int compareTime = o1.updatedTime.compareTo(o2.updatedTime);
+            if (compareTime != 0) return compareTime;
+            return Integer.compare(o1.paramType, o2.paramType);
         }
     }
 }

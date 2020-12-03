@@ -1,9 +1,7 @@
-package nju.ics.Main;
+package nju.ics.Entity;
 
 public class UpdatedBasicData {
     public Long updatedTime;
-    public String version, file, filePath;
+    public String file, filePath;
     public int paramType;
-
-
 }
