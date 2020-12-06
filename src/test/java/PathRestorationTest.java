@@ -53,9 +53,10 @@ public class PathRestorationTest {
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
+        System.out.println(ret);
         try {
             if (pathRestoration.recoveredPath != null) {
-                pathRestoration.recoveredPath.print("cost fix result");
+                pathRestoration.recoveredPath.print("Final recovered path");
                 String[] intellijResult = pathRestoration.recoveredPath.getStringArray();
                 String[] manualResult = testCase.getString("manualResult").split("\\|");
                 Assert.assertTrue(isValid(manualResult,

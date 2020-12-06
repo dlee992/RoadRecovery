@@ -7,9 +7,13 @@ public class RateLoadingTest {
 
     @Test
     public void testRateLoading() {
-        String file1    = "401_20103001_20201101000000.txt.zip";
-        String file2    = "402_20102101_20201101000000.txt.zip";
-        String file3    = "403_20102201_20201101000000.txt.zip";
+//        String file1    = "401_20103001_20201101000000.txt.zip";
+//        String file2    = "402_20102101_20201101000000.txt.zip";
+//        String file3    = "403_20102201_20201101000000.txt.zip";
+
+        String file1    = "401_20120601_20201206080000.txt.zip";
+        String file2    = "402_20112602_20201206080000.txt.zip";
+        String file3    = "403_20112701_20201206080000.txt.zip";
 
         String filePath = "src/test/resources/inputs";
 
