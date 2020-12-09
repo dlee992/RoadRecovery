@@ -155,8 +155,12 @@ public class GraphUpdating {
             String[] elements = line.split(",");
             Node mutualNode1 = new Node(elements[0]);
             Node mutualNode2 = new Node(elements[2]);
-            if (!graph.nodes.contains(mutualNode1) || !graph.nodes.contains(mutualNode2)) {
-                System.err.println("mutual node not found in graph.");
+            if (!graph.nodes.contains(mutualNode1) ) {
+                System.err.printf("[exec updateMutualNode]: %s not found in graph.\n", mutualNode1.index);
+                return false;
+            }
+            if (!graph.nodes.contains(mutualNode2)) {
+                System.err.printf("[exec updateMutualNode]: %s not found in graph.\n", mutualNode2.index);
                 return false;
             }
 
