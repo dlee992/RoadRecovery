@@ -3,6 +3,8 @@ package nju.ics.Main;
 import nju.ics.Entity.UpdatedBasicData;
 import org.json.JSONObject;
 
+import static nju.ics.Main.PathRestoration.*;
+
 public class RateLoading {
 
     public String rateLoadingMethod(String jsonData) {
@@ -15,8 +17,21 @@ public class RateLoading {
         updatedBasicData.paramType = jsonObj.getInt("paramType");
         updatedBasicData.updatedTime = Long.valueOf(updatedBasicData.file.substring(13, 13+14));
 
-        PathRestoration.updated = true;
-        PathRestoration.dataArray[updatedBasicData.paramType -1] = updatedBasicData;
+        dataArray[updatedBasicData.paramType -1] = updatedBasicData;
+
+        //TODO: write to Graph
+        if (dataArray[0] != null && dataArray[1] != null && dataArray[2] != null) {
+            writeLock.lock();
+
+            for (UpdatedBasicData data :
+                    dataArray) {
+                GraphUpdating.updateGraph(graph, data);
+            }
+            graph.buildAllShortestPathByDijkstra();
+            System.out.println("基础数据已更新");
+
+            writeLock.unlock();
+        }
 
         JSONObject retJson = new JSONObject();
         retJson.put("code", 1);

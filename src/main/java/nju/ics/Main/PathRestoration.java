@@ -10,6 +10,9 @@ import org.json.JSONObject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class PathRestoration {
 
@@ -17,12 +20,13 @@ public class PathRestoration {
 
     public static Graph graph = new Graph();
 
-    public static boolean updated = false;
+    protected static ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    protected static Lock readLock = readWriteLock.readLock();
+    protected static Lock writeLock = readWriteLock.writeLock();
+
     public static UpdatedBasicData[] dataArray = new UpdatedBasicData[3];
 
-    /**
-     * input key
-     */
+    //input key
     String enStationId, exStationId;
     String enTime, exTime;
     double addCost, deleteCost, deleteCost2, modifyCost, deleteEndCost;
@@ -36,7 +40,6 @@ public class PathRestoration {
 
     /**
      * interface method for external call
-     *
      * @param inputJson each element of an input path in JSON format
      * @return inputJson.toString()
      */
@@ -66,8 +69,6 @@ public class PathRestoration {
             timeList.add(transTime);
         }
 
-//        basicDataPath = jsonObj.getString("basicDataPath");
-
         //configuration parameter for DP
         modifyCost    = jsonObj.getDouble("modifyCost");
         addCost       = jsonObj.getDouble("addCost");
@@ -84,25 +85,7 @@ public class PathRestoration {
 
         vehicleType = jsonObj.getInt("vehicleType");
 
-        //TODO: if updated, then rebuild the graph
-        if (updated) {
-            if (dataArray[0] != null && dataArray[1] != null && dataArray[2] != null) {
-                for (UpdatedBasicData data :
-                        dataArray) {
-                    GraphUpdating.updateGraph(graph, data);
-                }
-                graph.buildAllShortestPathByDijkstra();
-                updated = false;
-            }
-        }
-
-        if (updated) {
-            System.err.println("Graph need updating, should not process new recovery data.");
-        }
-        //TODO: check graph consistency
-        if (!GraphUpdating.consistentChecking(graph)) {
-            System.err.println("updated graph is inconsistent.");
-        }
+        readLock.lock();
 
         //add the start and end node into original path
         Node startNode = getNode(graph, enStationId, false);
@@ -160,14 +143,13 @@ public class PathRestoration {
             ).toString();
         }
 
-//        originalPath.print("input path");
-//        System.out.println("原路径长度=" + originalPath.runtimeNodeList.size());
         Algorithm algorithm = new DPAlgorithm();
         recoveredPath = algorithm.execute(graph, originalPath, configs, vehicleType);
-//        recoveredPath.print("recovered path");
 
         //generate JSON data for return
         JSONObject returnJsonObj = getReturnedJsonObject(recoveredPath, "Unknown reason");
+
+        readLock.unlock();
 
         return returnJsonObj.toString();
     }
