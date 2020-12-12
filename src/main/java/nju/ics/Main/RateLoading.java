@@ -19,7 +19,7 @@ public class RateLoading {
 
         dataArray[updatedBasicData.paramType -1] = updatedBasicData;
 
-        //TODO: write to Graph
+        //write to Graph
         if (dataArray[0] != null && dataArray[1] != null && dataArray[2] != null) {
             writeLock.lock();
 
@@ -37,7 +37,5 @@ public class RateLoading {
         retJson.put("code", 1);
         retJson.put("description", "已记录更新时间和文件位置");
         return retJson.toString();
-
-        //TODO: when to return failed?
     }
 }
