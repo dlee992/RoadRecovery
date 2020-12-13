@@ -50,9 +50,9 @@ public class PathRestorationTest {
     public void runWithTestCase() {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
         if (++caseCount == 1)
-            rateLoadingTest.testRateLoading(0);
-        else if (caseCount == 5)
             rateLoadingTest.testRateLoading(1);
+        else if (caseCount == 2)
+            rateLoadingTest.testRateLoading(0);
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
