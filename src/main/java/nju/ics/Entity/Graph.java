@@ -23,7 +23,7 @@ public class Graph {
     private long INF = Long.MAX_VALUE / 2;
     private long[][] dist;
     private int[][] pre_node;
-    private ArrayList<ArrayList<Integer>> dijkstraEdges = new ArrayList<ArrayList<Integer>>(); // for Dijkstra
+    private ArrayList<ArrayList<Integer>> dijkstraEdges; // for Dijkstra
 
     private static class NodeDijkstra {
 
@@ -99,9 +99,10 @@ public class Graph {
     }
 
     public void buildAllShortestPathByDijkstra() {
+        dijkstraEdges = new ArrayList<>();
         for (int i = 0; i < nodes.size(); ++i) {
 //            System.out.println(nodes.get(i).index + nodes.get(i).name);
-            dijkstraEdges.add(new ArrayList<Integer>());
+            dijkstraEdges.add(new ArrayList<>());
         }
         for (Edge edge : edges) {
 //            if (edge.inNode.getMutualNode() != null && edge.inNode.getMutualNode() // 打印能调头的门架

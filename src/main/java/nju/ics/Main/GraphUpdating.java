@@ -72,6 +72,9 @@ public class GraphUpdating {
         graph.edgeFlag = true;
         releaseResources();
 
+        if (PathRestoration.debugging)
+            System.out.printf("graph node size = %d\n", graph.nodes.size());
+
         return true;
     }
 
@@ -156,12 +159,14 @@ public class GraphUpdating {
             Node mutualNode1 = new Node(elements[0]);
             Node mutualNode2 = new Node(elements[2]);
             if (!graph.nodes.contains(mutualNode1) ) {
-                System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode1.index);
+                if (PathRestoration.debugging)
+                    System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode1.index);
 //                return false;
                 continue;
             }
             if (!graph.nodes.contains(mutualNode2)) {
-                System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode2.index);
+                if (PathRestoration.debugging)
+                    System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode2.index);
 //                return false;
                 continue;
             }
@@ -193,7 +198,8 @@ public class GraphUpdating {
             }
             realMutualNode1.tollUnitLength = realMutualNode2.tollUnitLength = Integer.parseInt(elements[4]);
             if (elements.length < 6) {
-                System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
+                if (PathRestoration.debugging)
+                    System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
                 continue;
             }
             realMutualNode1.mileage = realMutualNode2.mileage = Long.parseLong(elements[5]);

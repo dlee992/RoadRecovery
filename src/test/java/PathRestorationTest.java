@@ -49,9 +49,9 @@ public class PathRestorationTest {
     @Test
     public void runWithTestCase() {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
-        if (++caseCount == 1)
+        if (++caseCount == 5)
             rateLoadingTest.testRateLoading(1);
-        else if (caseCount == 2)
+        else if (caseCount == 1)
             rateLoadingTest.testRateLoading(0);
 
         PathRestoration pathRestoration = new PathRestoration();
