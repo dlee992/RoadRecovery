@@ -250,12 +250,12 @@ public class PathRestoration {
         description.append(gantry);
     }
 
-    private static class UpdatedComparator implements Comparator<UpdatedBasicData> {
-        @Override
-        public int compare(UpdatedBasicData o1, UpdatedBasicData o2) {
-            int compareTime = o1.updatedTime.compareTo(o2.updatedTime);
-            if (compareTime != 0) return compareTime;
-            return Integer.compare(o1.paramType, o2.paramType);
-        }
-    }
+//    private static class UpdatedComparator implements Comparator<UpdatedBasicData> {
+//        @Override
+//        public int compare(UpdatedBasicData o1, UpdatedBasicData o2) {
+//            int compareTime = o1.updatedTime.compareTo(o2.updatedTime);
+//            if (compareTime != 0) return compareTime;
+//            return Integer.compare(o1.paramType, o2.paramType);
+//        }
+//    }
 }

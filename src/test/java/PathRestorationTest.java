@@ -44,12 +44,15 @@ public class PathRestorationTest {
         fileInputStream.close();
     }
 
-    @Test
-    public void testPathRestorationWithNewCases() {
-        RateLoadingTest rateLoadingTest = new RateLoadingTest();
-        rateLoadingTest.testRateLoading();
+    static int caseCount = 0;
 
-//        System.out.println("testcase = " + testCase.toString());
+    @Test
+    public void runWithTestCase() {
+        RateLoadingTest rateLoadingTest = new RateLoadingTest();
+        if (++caseCount == 1)
+            rateLoadingTest.testRateLoading(0);
+        else if (caseCount == 5)
+            rateLoadingTest.testRateLoading(1);
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
