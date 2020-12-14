@@ -18,7 +18,7 @@ public class GraphUpdating {
     static BufferedReader reader = null;
 
 
-    public static boolean updateGraph(Graph graph, UpdatedBasicData updatedBasicData) {
+    public static boolean updateGraph(Graph graph, UpdatedBasicData updatedBasicData) throws IOException {
         GraphUpdating.graph = graph;
         GraphUpdating.updatedBasicData = updatedBasicData;
 
@@ -33,16 +33,12 @@ public class GraphUpdating {
         return false;
     }
 
-    private static boolean updateNodeAndEdge() {
+    private static boolean updateNodeAndEdge() throws IOException {
         graph.nodes = new ArrayList<>();
         graph.edges = new HashSet<>();
 
-        try {
-            reader = getBufferReader();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        reader = getBufferReader();
+
         int rowIndex = 0;
         while (true) {
             String line = getLineFromReader();
@@ -112,29 +108,20 @@ public class GraphUpdating {
     private static BufferedReader getBufferReader() throws IOException {
         String fullName = updatedBasicData.filePath + File.separator + updatedBasicData.file;
 
-        try {
-            zipFile = new ZipFile(fullName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        zipFile = new ZipFile(fullName);
 
-        assert zipFile != null;
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
         if (!entries.hasMoreElements()) {
             System.err.println("not found anything in .zip");
-            StackTraceElement[] stackList = Thread.currentThread().getStackTrace();
-            for (StackTraceElement stackTrace:
-                    stackList) {
-                System.err.println(stackTrace);
-            }
+            throw new IOException("not found anything in .zip");
         }
 
         ZipEntry entry = entries.nextElement();
         return new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
     }
 
-    private static boolean updateMutualNode() {
+    private static boolean updateMutualNode() throws IOException {
         for (Node node:
              graph.nodes) {
             node.mutualNode = null;
@@ -143,12 +130,7 @@ public class GraphUpdating {
             node.mileage = 0;
         }
 
-        try {
-            reader = getBufferReader();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        reader = getBufferReader();
 
         int rowIndex = 0;
         while (true) {
@@ -224,15 +206,10 @@ public class GraphUpdating {
         return line;
     }
 
-    private static boolean updateMoneyMap() {
+    private static boolean updateMoneyMap() throws IOException {
         graph.moneyMap.clear();
 
-        try {
-            reader = getBufferReader();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        reader = getBufferReader();
 
         int rowIndex = 0;
         while (true) {

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>icsnju</groupId>
-    <artifactId>RoadRecovery</artifactId>
+    <artifactId>RR</artifactId>
     <version>1213-loading-concurrent</version>
     <build>
         <plugins>

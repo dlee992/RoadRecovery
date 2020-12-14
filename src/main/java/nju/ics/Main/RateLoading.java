@@ -3,6 +3,8 @@ package nju.ics.Main;
 import nju.ics.Entity.UpdatedBasicData;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import static nju.ics.Main.PathRestoration.*;
 
 public class RateLoading {
@@ -21,16 +23,27 @@ public class RateLoading {
 
         //write to Graph
         if (dataArray[0] != null && dataArray[1] != null && dataArray[2] != null) {
-            writeLock.lock();
+            writeLock.lock(); // lock
 
             for (UpdatedBasicData data :
                     dataArray) {
-                GraphUpdating.updateGraph(graph, data);
+                try {
+                    GraphUpdating.updateGraph(graph, data);
+                } catch (IOException e) {
+                    System.err.println("读取zip文件时，发生数据异常或网络中断，更新失败，请稍后重试");
+                    JSONObject retJson = new JSONObject();
+                    retJson.put("code", 2);
+                    retJson.put("description", "读取zip文件时，发生数据异常或网络中断，更新失败，请稍后重试");
+
+                    writeLock.unlock(); // unlock when exception
+
+                    return retJson.toString();
+                }
             }
             graph.buildAllShortestPathByDijkstra();
             System.out.println("基础数据已更新");
 
-            writeLock.unlock();
+            writeLock.unlock(); // unlock when normal
         }
 
         JSONObject retJson = new JSONObject();
