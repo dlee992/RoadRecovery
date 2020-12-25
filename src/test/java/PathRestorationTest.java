@@ -17,7 +17,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class PathRestorationTest {
 
-    static String test_data = "src/test/resources/inputs/test-data.txt";
+    static String test_data = "src/test/resources/inputs/TestData-1225.txt";
     static int count = 0;
 
     @Parameterized.Parameter
@@ -49,10 +49,7 @@ public class PathRestorationTest {
     @Test
     public void runWithTestCase() {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
-        if (++caseCount == 5)
-            rateLoadingTest.testRateLoading(1);
-        else if (caseCount == 1)
-            rateLoadingTest.testRateLoading(0);
+        rateLoadingTest.testRateLoading(1);
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());

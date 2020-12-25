@@ -20,7 +20,7 @@ public class PathRestoration {
 
     public static Graph graph = new Graph();
 
-    protected static ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    protected static ReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
     protected static Lock readLock = readWriteLock.readLock();
     protected static Lock writeLock = readWriteLock.writeLock();
 
