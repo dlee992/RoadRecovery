@@ -10,6 +10,7 @@ import org.junit.runners.Parameterized;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -62,6 +63,8 @@ public class PathRestorationTest {
                 Assert.assertTrue(isValid(manualResult,
                         testCase.getString("enStationId"),
                         testCase.getString("exStationId")));
+                System.out.println(Arrays.toString(manualResult));
+                System.out.println(Arrays.toString(intellijResult));
                 Assert.assertArrayEquals(manualResult, intellijResult);
             }
             else {
