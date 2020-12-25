@@ -79,6 +79,7 @@ public class PathRestorationTest {
                 }
                 System.out.println();
                 Assert.assertArrayEquals(manualResult, intellijResult);
+                System.out.flush();
             }
             else {
                 System.err.println(ret);

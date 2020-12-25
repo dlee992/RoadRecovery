@@ -6,7 +6,7 @@
 
     <groupId>icsnju</groupId>
     <artifactId>RR</artifactId>
-    <version>1213-loading-concurrent</version>
+    <version>1225-loading-with-bugfix</version>
     <build>
         <plugins>
             <plugin>

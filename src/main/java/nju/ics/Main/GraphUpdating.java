@@ -4,6 +4,7 @@ import nju.ics.Entity.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.zip.ZipEntry;
@@ -134,62 +135,63 @@ public class GraphUpdating {
 
         int rowIndex = 0;
         while (true) {
+            Node realMutualNode1 = null, realMutualNode2 = null;
+
             String line = getLineFromReader();
             if (line == null) break;
             if (rowIndex++ < 2) continue;
             String[] elements = line.split(",");
             Node mutualNode1 = new Node(elements[0]);
             Node mutualNode2 = new Node(elements[2]);
-            if (!graph.nodes.contains(mutualNode1) ) {
+
+            //update for each node, then set each other to mutual node.
+            boolean missingOne = false;
+            if (!graph.nodes.contains(mutualNode1)) {
+                missingOne = true;
                 if (PathRestoration.debugging)
                     System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode1.index);
-//                return false;
-                continue;
+            } else {
+                realMutualNode1 = graph.nodes.get(graph.nodes.indexOf(mutualNode1));
+                updateOneNode(realMutualNode1, elements, rowIndex);
             }
+
             if (!graph.nodes.contains(mutualNode2)) {
+                missingOne = true;
                 if (PathRestoration.debugging)
                     System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode2.index);
-//                return false;
-                continue;
+            } else {
+                realMutualNode2 = graph.nodes.get(graph.nodes.indexOf(mutualNode2));
+                updateOneNode(realMutualNode2, elements, rowIndex);
             }
 
-            Node realMutualNode1 = graph.nodes.get(graph.nodes.indexOf(mutualNode1));
-            Node realMutualNode2 = graph.nodes.get(graph.nodes.indexOf(mutualNode2));
+            if (missingOne) continue;
 
             if (realMutualNode1.mutualNode != null || realMutualNode2.mutualNode != null) {
-//                System.err.printf("one node has already have mutual node\n");
-//                System.err.flush();
+                if (PathRestoration.debugging)
+                    System.err.print("one node has already have mutual node\n");
                 continue;
             }
 
             realMutualNode1.mutualNode = realMutualNode2;
             realMutualNode2.mutualNode = realMutualNode1;
-
-            if (PathRestoration.debugging) {
-                System.out.printf("node1=%s, node2=%s\n", realMutualNode1.index, realMutualNode2.index);
-//                System.out.flush();
-            }
-
-            String[] tollUnits = elements[3].split("\\|");
-            realMutualNode1.tollUnitList = new ArrayList<>();
-            realMutualNode2.tollUnitList = new ArrayList<>();
-            for (String tollUnitIndex:
-                 tollUnits) {
-                realMutualNode1.tollUnitList.add(tollUnitIndex);
-                realMutualNode2.tollUnitList.add(tollUnitIndex);
-            }
-            realMutualNode1.tollUnitLength = realMutualNode2.tollUnitLength = Integer.parseInt(elements[4]);
-            if (elements.length < 6) {
-                if (PathRestoration.debugging)
-                    System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
-                continue;
-            }
-            realMutualNode1.mileage = realMutualNode2.mileage = Long.parseLong(elements[5]);
         }
 
         graph.mutualFlag = true;
         releaseResources();
         return true;
+    }
+
+    private static void updateOneNode(Node realMutualNode, String[] elements, int rowIndex) {
+        String[] tollUnits = elements[3].split("\\|");
+        realMutualNode.tollUnitList = new ArrayList<>();
+        realMutualNode.tollUnitList.addAll(Arrays.asList(tollUnits));
+        realMutualNode.tollUnitLength = Integer.parseInt(elements[4]);
+        if (elements.length < 6) {
+            if (PathRestoration.debugging)
+                System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
+            return;
+        }
+        realMutualNode.mileage = Long.parseLong(elements[5]);
     }
 
     private static String getLineFromReader() {
@@ -223,7 +225,7 @@ public class GraphUpdating {
             String combinedKey = tollUnitIndex + vehicleType;
             graph.moneyMap.put(combinedKey, fee);
             if (PathRestoration.debugging) {
-                System.out.printf("unit=%s, vehicleType=%s, fee=%d\n", tollUnitIndex, vehicleType, fee);
+//                System.out.printf("unit=%s, vehicleType=%s, fee=%d\n", tollUnitIndex, vehicleType, fee);
             }
         }
 
