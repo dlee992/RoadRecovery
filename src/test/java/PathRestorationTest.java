@@ -1,5 +1,6 @@
 import nju.ics.Entity.Edge;
 import nju.ics.Entity.Node;
+import nju.ics.Entity.Path;
 import nju.ics.Main.PathRestoration;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +65,19 @@ public class PathRestorationTest {
                         testCase.getString("enStationId"),
                         testCase.getString("exStationId")));
                 System.out.println(Arrays.toString(manualResult));
+                for (String node:
+                        manualResult) {
+                    int index = PathRestoration.graph.nodes.indexOf(new Node(node));
+                    System.out.print(PathRestoration.graph.nodes.get(index).mileage + " ");
+                }
+                System.out.println();
                 System.out.println(Arrays.toString(intellijResult));
+                for (String node:
+                     intellijResult) {
+                    int index = PathRestoration.graph.nodes.indexOf(new Node(node));
+                    System.out.print(PathRestoration.graph.nodes.get(index).mileage + " ");
+                }
+                System.out.println();
                 Assert.assertArrayEquals(manualResult, intellijResult);
             }
             else {
