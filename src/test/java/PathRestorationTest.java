@@ -1,6 +1,5 @@
 import nju.ics.Entity.Edge;
 import nju.ics.Entity.Node;
-import nju.ics.Entity.Path;
 import nju.ics.Main.PathRestoration;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +50,7 @@ public class PathRestorationTest {
     @Test
     public void runWithTestCase() {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
-        rateLoadingTest.testRateLoading(1);
+        rateLoadingTest.testRateLoading(2);
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
@@ -92,17 +91,17 @@ public class PathRestorationTest {
 
     private boolean isValid(String[] manualResult, String enStationId, String exStationId) {
         int length = manualResult.length;
-        if (!connected(enStationId, manualResult[0])) {
+        if (connected(enStationId, manualResult[0])) {
             System.err.println("start not connected");
             return false;
         }
-        if (!connected(manualResult[length - 1], exStationId)) {
+        if (connected(manualResult[length - 1], exStationId)) {
             System.err.println("end not connected");
             return false;
         }
 
         for (int i = 0; i < length-1; i++) {
-            if (!connected(manualResult[i], manualResult[i + 1])) {
+            if (connected(manualResult[i], manualResult[i + 1])) {
                 System.err.printf("%s is not connected with %s\n", manualResult[i], manualResult[i+1]);
                 return false;
             }
@@ -115,22 +114,22 @@ public class PathRestorationTest {
         int index = nodes.indexOf(new Node(prevId));
         if (index < 0) {
 //            System.err.println("first node not exists.");
-            return false;
+            return true;
         }
         Node prevNode = nodes.get(index);
 
         index = nodes.indexOf(new Node(nextId));
         if (index < 0) {
 //            System.err.printf("second node %s not exists.", nextId);
-            return false;
+            return true;
         }
         Node nextNode = nodes.get(index);
-        if (prevNode == null || nextNode == null) return true;
+        if (prevNode == null || nextNode == null) return false;
 
 //        System.err.println("two nodes exist.");
 
         Edge edge = new Edge(prevNode, nextNode);
-        if (PathRestoration.graph.edges.contains(edge)) return false;
-        return true;
+        if (PathRestoration.graph.edges.contains(edge)) return true;
+        return false;
     }
 }

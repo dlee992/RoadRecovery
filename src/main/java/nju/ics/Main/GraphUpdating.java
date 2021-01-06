@@ -35,48 +35,6 @@ public class GraphUpdating {
         return false;
     }
 
-    private static boolean updateNodeAndEdge() throws IOException {
-        graph.nodes = new ArrayList<>();
-        graph.edges = new HashSet<>();
-
-        reader = getBufferReader();
-
-        int rowIndex = 0;
-        while (true) {
-            String line = getLineFromReader();
-            if (line == null) break;
-            if (rowIndex++ < 2) continue;
-            String[] elements = line.split(",");
-            Node startNode = extractNodeAndAddIntoGraph(elements[0], elements[1]);
-            Node endNode = extractNodeAndAddIntoGraph(elements[2], elements[3]);
-            Edge edge = new Edge(startNode, endNode);
-            if (graph.edges.contains(edge)) {
-                errMsg = "this edge has already added into graph";
-                System.err.println(errMsg);
-                StackTraceElement[] stackList = Thread.currentThread().getStackTrace();
-                for (StackTraceElement stackTrace:
-                        stackList) {
-                    System.err.println(stackTrace);
-                }
-                return false;
-            }
-            else {
-                graph.edges.add(edge);
-                if (PathRestoration.debugging)
-                    System.out.printf("edgeIndex=%d, startNode=%s, endNode=%s\n",
-                            graph.edges.size(), startNode.index, endNode.index);
-            }
-        }
-
-        graph.edgeFlag = true;
-        releaseResources();
-
-        if (PathRestoration.debugging)
-            System.out.printf("graph node size = %d\n", graph.nodes.size());
-
-        return true;
-    }
-
     private static void releaseResources() {
         try {
             zipFile.close();
@@ -124,9 +82,82 @@ public class GraphUpdating {
         return new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
     }
 
+    private static String getLineFromReader() {
+        String line = null;
+        try {
+            assert reader != null;
+            if (!reader.ready()) return null;
+            line = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assert line != null;
+        return line;
+    }
+
+    //update 401 supported
+    private static void updateOneNode(Node realMutualNode, String[] elements, int rowIndex, boolean second) {
+        String[] tollUnits = elements[3].split("\\|");
+        realMutualNode.tollUnitList = new ArrayList<>();
+        realMutualNode.tollUnitList.addAll(Arrays.asList(tollUnits));
+        realMutualNode.tollUnitLength = Integer.parseInt(elements[4]);
+        if (elements.length < 6) {
+            if (PathRestoration.debugging)
+                System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
+            return;
+        }
+//        if (second) return;
+        realMutualNode.mileage = Long.parseLong(elements[5]);
+    }
+
+    //update 401
+    private static boolean updateNodeAndEdge() throws IOException {
+        graph.nodes = new ArrayList<>();
+        graph.edges = new HashSet<>();
+
+        reader = getBufferReader();
+
+        int rowIndex = 0;
+        while (true) {
+            String line = getLineFromReader();
+            if (line == null) break;
+            if (rowIndex++ < 2) continue;
+            String[] elements = line.split(",");
+            Node startNode = extractNodeAndAddIntoGraph(elements[0], elements[1]);
+            Node endNode = extractNodeAndAddIntoGraph(elements[2], elements[3]);
+            Edge edge = new Edge(startNode, endNode);
+            if (graph.edges.contains(edge)) {
+                errMsg = "this edge has already added into graph";
+                System.err.println(errMsg);
+                StackTraceElement[] stackList = Thread.currentThread().getStackTrace();
+                for (StackTraceElement stackTrace:
+                        stackList) {
+                    System.err.println(stackTrace);
+                }
+                return false;
+            }
+            else {
+                graph.edges.add(edge);
+                if (PathRestoration.debugging)
+                    System.out.printf("edgeIndex=%d, startNode=%s, endNode=%s\n",
+                            graph.edges.size(), startNode.index, endNode.index);
+            }
+        }
+
+        graph.edgeFlag = true;
+        releaseResources();
+
+        if (PathRestoration.debugging)
+            System.out.printf("graph node size = %d\n", graph.nodes.size());
+
+        return true;
+    }
+
+    //update 402
     private static boolean updateMutualNode() throws IOException {
         for (Node node:
-             graph.nodes) {
+                graph.nodes) {
             node.mutualNode = null;
             node.tollUnitList = null;
             node.tollUnitLength = 0;
@@ -184,34 +215,7 @@ public class GraphUpdating {
         return true;
     }
 
-    private static void updateOneNode(Node realMutualNode, String[] elements, int rowIndex, boolean second) {
-        String[] tollUnits = elements[3].split("\\|");
-        realMutualNode.tollUnitList = new ArrayList<>();
-        realMutualNode.tollUnitList.addAll(Arrays.asList(tollUnits));
-        realMutualNode.tollUnitLength = Integer.parseInt(elements[4]);
-        if (elements.length < 6) {
-            if (PathRestoration.debugging)
-                System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
-            return;
-        }
-//        if (second) return;
-        realMutualNode.mileage = Long.parseLong(elements[5]);
-    }
-
-    private static String getLineFromReader() {
-        String line = null;
-        try {
-            assert reader != null;
-            if (!reader.ready()) return null;
-            line = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assert line != null;
-        return line;
-    }
-
+    //update 403
     private static boolean updateMoneyMap() throws IOException {
         graph.moneyMap.clear();
 
@@ -235,11 +239,6 @@ public class GraphUpdating {
 
         graph.moneyFlag = true;
         releaseResources();
-        return true;
-    }
-
-    public static boolean consistentChecking(Graph graph) {
-        //todo
         return true;
     }
 }
