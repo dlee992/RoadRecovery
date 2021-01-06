@@ -22,6 +22,11 @@ public class RateLoadingTest {
         jsonObject.put("paramType", 1);
         rateLoading = new RateLoading();
         ret = rateLoading.rateLoadingMethod(jsonObject.toString());
+        JSONObject jsonObject1 = new JSONObject(ret);
+        if (jsonObject1.get("code").equals("false")) {
+            System.err.println("OhMyGod");
+            System.exit(1);
+        }
 
         jsonObject = new JSONObject();
         jsonObject.put("file",      file2[base]);
@@ -29,6 +34,11 @@ public class RateLoadingTest {
         jsonObject.put("paramType", 2);
         rateLoading = new RateLoading();
         ret = rateLoading.rateLoadingMethod(jsonObject.toString());
+        jsonObject1 = new JSONObject(ret);
+        if (jsonObject1.get("code").equals("false")) {
+            System.err.println("OhMyGod");
+            System.exit(1);
+        }
 
         jsonObject = new JSONObject();
         jsonObject.put("file",      file3[base]);
@@ -36,5 +46,10 @@ public class RateLoadingTest {
         jsonObject.put("paramType", 3);
         rateLoading = new RateLoading();
         ret = rateLoading.rateLoadingMethod(jsonObject.toString());
+        jsonObject1 = new JSONObject(ret);
+        if (jsonObject1.get("code").equals("false")) {
+            System.err.println("OhMyGod");
+            System.exit(1);
+        }
     }
 }

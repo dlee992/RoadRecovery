@@ -12,6 +12,7 @@ import java.util.zip.ZipFile;
 
 public class GraphUpdating {
 
+    public static String errMsg = null;
     static Graph graph = null;
     static UpdatedBasicData updatedBasicData = null;
 
@@ -50,7 +51,8 @@ public class GraphUpdating {
             Node endNode = extractNodeAndAddIntoGraph(elements[2], elements[3]);
             Edge edge = new Edge(startNode, endNode);
             if (graph.edges.contains(edge)) {
-                System.err.println("this edge has already added into graph");
+                errMsg = "this edge has already added into graph";
+                System.err.println(errMsg);
                 StackTraceElement[] stackList = Thread.currentThread().getStackTrace();
                 for (StackTraceElement stackTrace:
                         stackList) {
@@ -147,12 +149,12 @@ public class GraphUpdating {
             //update for each node, then set each other to mutual node.
             boolean missingOne = false;
             if (!graph.nodes.contains(mutualNode1)) {
-                missingOne = true;
+                errMsg = "{WARNING}[exec updateMutualNode]: " + mutualNode1.index +  " not found in graph.";
                 if (PathRestoration.debugging)
-                    System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode1.index);
+                    System.err.println(errMsg);
             } else {
                 realMutualNode1 = graph.nodes.get(graph.nodes.indexOf(mutualNode1));
-                updateOneNode(realMutualNode1, elements, rowIndex);
+                updateOneNode(realMutualNode1, elements, rowIndex, false);
             }
 
             if (!graph.nodes.contains(mutualNode2)) {
@@ -161,9 +163,10 @@ public class GraphUpdating {
                     System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode2.index);
             } else {
                 realMutualNode2 = graph.nodes.get(graph.nodes.indexOf(mutualNode2));
-                updateOneNode(realMutualNode2, elements, rowIndex);
+                updateOneNode(realMutualNode2, elements, rowIndex, true);
             }
 
+            if (errMsg != null) return false;
             if (missingOne) continue;
 
             if (realMutualNode1.mutualNode != null || realMutualNode2.mutualNode != null) {
@@ -181,7 +184,7 @@ public class GraphUpdating {
         return true;
     }
 
-    private static void updateOneNode(Node realMutualNode, String[] elements, int rowIndex) {
+    private static void updateOneNode(Node realMutualNode, String[] elements, int rowIndex, boolean second) {
         String[] tollUnits = elements[3].split("\\|");
         realMutualNode.tollUnitList = new ArrayList<>();
         realMutualNode.tollUnitList.addAll(Arrays.asList(tollUnits));
@@ -191,6 +194,7 @@ public class GraphUpdating {
                 System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
             return;
         }
+//        if (second) return;
         realMutualNode.mileage = Long.parseLong(elements[5]);
     }
 

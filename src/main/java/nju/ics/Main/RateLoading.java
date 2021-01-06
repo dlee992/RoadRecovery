@@ -28,7 +28,14 @@ public class RateLoading {
             for (UpdatedBasicData data :
                     dataArray) {
                 try {
-                    GraphUpdating.updateGraph(graph, data);
+                    if (!GraphUpdating.updateGraph(graph, data)) {
+                        JSONObject retJson = new JSONObject();
+                        retJson.put("code", 2);
+                        retJson.put("description", GraphUpdating.errMsg);
+                        writeLock.unlock(); // unlock when exception
+                        System.err.println("OhMyGod.");
+                        return retJson.toString();
+                    }
                 } catch (IOException e) {
                     System.err.println("读取zip文件时，发生数据异常或网络中断，更新失败，请稍后重试");
                     JSONObject retJson = new JSONObject();
@@ -48,7 +55,7 @@ public class RateLoading {
 
         JSONObject retJson = new JSONObject();
         retJson.put("code", 1);
-        retJson.put("description", "已记录更新时间和文件位置");
+        retJson.put("description", "Updates succeeded.");
         return retJson.toString();
     }
 }
