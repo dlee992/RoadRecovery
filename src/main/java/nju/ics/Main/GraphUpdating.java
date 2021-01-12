@@ -27,9 +27,11 @@ public class GraphUpdating {
         if (updatedBasicData.paramType == 1)
             return updateNodeAndEdge();
         else if (updatedBasicData.paramType == 2)
-            return updateMutualNode();
+            return updateMileage();
         else if (updatedBasicData.paramType == 3)
             return updateMoneyMap();
+        else if (updatedBasicData.paramType == 4)
+            return updateMutualNode();
 
         //should not go here
         return false;
@@ -96,19 +98,25 @@ public class GraphUpdating {
         return line;
     }
 
-    //update 401 supported
-    private static void updateOneNode(Node realMutualNode, String[] elements, int rowIndex, boolean second) {
-        String[] tollUnits = elements[3].split("\\|");
-        realMutualNode.tollUnitList = new ArrayList<>();
-        realMutualNode.tollUnitList.addAll(Arrays.asList(tollUnits));
-        realMutualNode.tollUnitLength = Integer.parseInt(elements[4]);
-        if (elements.length < 6) {
-            if (PathRestoration.debugging)
-                System.err.printf("{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n", rowIndex);
-            return;
+    //update 402 supported
+    private static void updateOneNode(Node realNode, String[] elements, int rowIndex) {
+        try {
+            realNode.tollUnitList = new ArrayList<>();
+            realNode.tollUnitList.addAll(Arrays.asList(elements[2].split("\\|")));
+            realNode.tollUnitLength = Integer.parseInt(elements[3]);
+
+            if (elements.length < 5) {
+                if (PathRestoration.debugging)
+                    System.err.printf(
+                            "{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n",
+                            rowIndex);
+                return;
+            }
+            realNode.mileage = Long.parseLong(elements[4]);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Error line in 402:" + Arrays.toString(elements));
         }
-//        if (second) return;
-        realMutualNode.mileage = Long.parseLong(elements[5]);
     }
 
     //update 401
@@ -155,10 +163,9 @@ public class GraphUpdating {
     }
 
     //update 402
-    private static boolean updateMutualNode() throws IOException {
+    private static boolean updateMileage() throws IOException {
         for (Node node:
                 graph.nodes) {
-            node.mutualNode = null;
             node.tollUnitList = null;
             node.tollUnitLength = 0;
             node.mileage = 0;
@@ -168,49 +175,31 @@ public class GraphUpdating {
 
         int rowIndex = 0;
         while (true) {
-            Node realMutualNode1 = null, realMutualNode2 = null;
+            Node realNode = null;
 
             String line = getLineFromReader();
             if (line == null) break;
             if (rowIndex++ < 2) continue;
             String[] elements = line.split(",");
-            Node mutualNode1 = new Node(elements[0]);
-            Node mutualNode2 = new Node(elements[2]);
+            Node fakeNode = new Node(elements[0]);
 
             //update for each node, then set each other to mutual node.
-            boolean missingOne = false;
-            if (!graph.nodes.contains(mutualNode1)) {
-                errMsg = "{WARNING}[exec updateMutualNode]: " + mutualNode1.index +  " not found in graph.";
+            if (!graph.nodes.contains(fakeNode)) {
+                errMsg = "{WARNING}[exec updateMutualNode]: " + fakeNode.index +  " not found in graph.";
                 if (PathRestoration.debugging)
                     System.err.println(errMsg);
+                continue;
             } else {
-                realMutualNode1 = graph.nodes.get(graph.nodes.indexOf(mutualNode1));
-                updateOneNode(realMutualNode1, elements, rowIndex, false);
+                realNode = graph.nodes.get(graph.nodes.indexOf(fakeNode));
+                updateOneNode(realNode, elements, rowIndex);
             }
 
-            if (!graph.nodes.contains(mutualNode2)) {
-                missingOne = true;
-                if (PathRestoration.debugging)
-                    System.err.printf("{WARNING}[exec updateMutualNode]: %s not found in graph.\n", mutualNode2.index);
-            } else {
-                realMutualNode2 = graph.nodes.get(graph.nodes.indexOf(mutualNode2));
-                updateOneNode(realMutualNode2, elements, rowIndex, true);
-            }
-
-            if (errMsg != null) return false;
-            if (missingOne) continue;
-
-            if (realMutualNode1.mutualNode != null || realMutualNode2.mutualNode != null) {
+            if (realNode.mutualNode != null) {
                 if (PathRestoration.debugging)
                     System.err.print("one node has already have mutual node\n");
-                continue;
             }
-
-            realMutualNode1.mutualNode = realMutualNode2;
-            realMutualNode2.mutualNode = realMutualNode1;
         }
 
-        graph.mutualFlag = true;
         releaseResources();
         return true;
     }
@@ -241,4 +230,32 @@ public class GraphUpdating {
         releaseResources();
         return true;
     }
+
+    //update 404
+    private static boolean updateMutualNode() throws IOException {
+        for (Node node: graph.nodes)
+            node.mutualNode = null;
+
+        reader = getBufferReader();
+        String line = getLineFromReader();
+        for (int index = 0; line != null; index++, line = getLineFromReader()) {
+            if (index < 2) continue;
+            String[] elements = line.split(",");
+            Node fakeNode_1 = new Node(elements[0]);
+            Node fakeNode_2 = new Node(elements[2]);
+            if (!(graph.nodes.contains(fakeNode_1) && graph.nodes.contains(fakeNode_2))) {
+                errMsg = "at least one node in " + line + " exists in 404, but doesn't exist in 401.";
+                if (PathRestoration.debugging)
+                    System.err.println(errMsg);
+                return false;
+            }
+            Node realNode_1 = graph.nodes.get(graph.nodes.indexOf(fakeNode_1));
+            Node realNode_2 = graph.nodes.get(graph.nodes.indexOf(fakeNode_2));
+            realNode_1.mutualNode = realNode_2;
+            realNode_2.mutualNode = realNode_1;
+        }
+
+        return true;
+    }
+
 }

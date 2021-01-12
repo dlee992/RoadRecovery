@@ -22,18 +22,19 @@ public class RateLoading {
         dataArray[updatedBasicData.paramType -1] = updatedBasicData;
 
         //write to Graph
-        if (dataArray[0] != null && dataArray[1] != null && dataArray[2] != null) {
+        if (dataArray[0] != null && dataArray[1] != null && dataArray[2] != null && dataArray[3] != null) {
             writeLock.lock(); // lock
 
             for (UpdatedBasicData data :
                     dataArray) {
                 try {
                     if (!GraphUpdating.updateGraph(graph, data)) {
+                        graph_consistent = false;
                         JSONObject retJson = new JSONObject();
                         retJson.put("code", 2);
                         retJson.put("description", GraphUpdating.errMsg);
                         writeLock.unlock(); // unlock when exception
-                        System.err.println("OhMyGod.");
+                        System.err.println("OhMyGod: " + GraphUpdating.errMsg);
                         return retJson.toString();
                     }
                 } catch (IOException e) {
@@ -47,6 +48,7 @@ public class RateLoading {
                     return retJson.toString();
                 }
             }
+            graph_consistent = true;
             graph.buildAllShortestPathByDijkstra();
             System.out.println("基础数据已更新");
 

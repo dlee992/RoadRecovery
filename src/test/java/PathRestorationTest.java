@@ -50,7 +50,8 @@ public class PathRestorationTest {
     @Test
     public void runWithTestCase() {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
-        rateLoadingTest.testRateLoading(2);
+        rateLoadingTest.base = 0;
+        rateLoadingTest.testRateLoading();
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
@@ -129,7 +130,6 @@ public class PathRestorationTest {
 //        System.err.println("two nodes exist.");
 
         Edge edge = new Edge(prevNode, nextNode);
-        if (PathRestoration.graph.edges.contains(edge)) return true;
-        return false;
+        return PathRestoration.graph.edges.contains(edge);
     }
 }

@@ -19,12 +19,13 @@ public class PathRestoration {
     public static boolean debugging = false;
 
     public static Graph graph = new Graph();
+    public static volatile Boolean graph_consistent = false;
 
     protected static ReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
     protected static Lock readLock = readWriteLock.readLock();
     protected static Lock writeLock = readWriteLock.writeLock();
 
-    public static UpdatedBasicData[] dataArray = new UpdatedBasicData[3];
+    public static UpdatedBasicData[] dataArray = new UpdatedBasicData[4];
 
     //input key
     String enStationId, exStationId;
@@ -32,7 +33,7 @@ public class PathRestoration {
     double addCost, deleteCost, deleteCost2, modifyCost, deleteEndCost;
     int vehicleType;
 
-    StringBuilder description = new StringBuilder("Unknown gantry: ");
+    String description = new String("Unknown gantry: ");
     int desCount = 0;
 
     RuntimePath originalPath = new RuntimePath();
@@ -86,6 +87,14 @@ public class PathRestoration {
         vehicleType = jsonObj.getInt("vehicleType");
 
         readLock.lock();
+        if (!graph_consistent) {
+            System.err.println("graph is broken, refuse to execute recovery algorithm.");
+            description = "graph is broken, refuse to execute recovery algorithm.";
+            return getReturnedJsonObject(
+                    null,
+                    description
+            ).toString();
+        }
 
         //add the start and end node into original path
         Node startNode = getNode(graph, enStationId, false);
@@ -245,9 +254,9 @@ public class PathRestoration {
     }
 
     private void updateDescription(String gantry) {
-        if (desCount > 0) description.append("|");
+        if (desCount > 0) description += "|";
         desCount++;
-        description.append(gantry);
+        description += gantry;
     }
 
 //    private static class UpdatedComparator implements Comparator<UpdatedBasicData> {
