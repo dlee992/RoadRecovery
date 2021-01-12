@@ -121,6 +121,8 @@ public class GraphUpdating {
 
     //update 401
     private static boolean updateNodeAndEdge() throws IOException {
+        // Assume 401 is always correct, so never return false.
+
         graph.nodes = new ArrayList<>();
         graph.edges = new HashSet<>();
 
@@ -136,14 +138,9 @@ public class GraphUpdating {
             Node endNode = extractNodeAndAddIntoGraph(elements[2], elements[3]);
             Edge edge = new Edge(startNode, endNode);
             if (graph.edges.contains(edge)) {
-                errMsg = "this edge has already added into graph";
+                errMsg = "this edge (" + line + ") has already added into graph";
                 System.err.println(errMsg);
-                StackTraceElement[] stackList = Thread.currentThread().getStackTrace();
-                for (StackTraceElement stackTrace:
-                        stackList) {
-                    System.err.println(stackTrace);
-                }
-                return false;
+//                return false;
             }
             else {
                 graph.edges.add(edge);
@@ -153,9 +150,7 @@ public class GraphUpdating {
             }
         }
 
-        graph.edgeFlag = true;
         releaseResources();
-
         if (PathRestoration.debugging)
             System.out.printf("graph node size = %d\n", graph.nodes.size());
 
@@ -164,6 +159,8 @@ public class GraphUpdating {
 
     //update 402
     private static boolean updateMileage() throws IOException {
+        // Assume always correct, never return false.
+        //update
         for (Node node:
                 graph.nodes) {
             node.tollUnitList = null;
@@ -172,10 +169,9 @@ public class GraphUpdating {
         }
 
         reader = getBufferReader();
-
         int rowIndex = 0;
         while (true) {
-            Node realNode = null;
+            Node realNode;
 
             String line = getLineFromReader();
             if (line == null) break;
@@ -206,11 +202,26 @@ public class GraphUpdating {
 
     //update 403
     private static boolean updateMoneyMap() throws IOException {
-        graph.moneyMap.clear();
-
+        //check
         reader = getBufferReader();
-
         int rowIndex = 0;
+        while (true) {
+            String line = getLineFromReader();
+            if (line == null) break;
+            if (rowIndex++ < 2) continue;
+            String[] elements = line.split(",");
+            if (elements.length < 5) {
+                errMsg = "one line (" + line + ") in 403, but too short.";
+                if (PathRestoration.debugging)
+                    System.err.println(errMsg);
+                return false;
+            }
+        }
+
+        //update
+        graph.moneyMap.clear();
+        reader = getBufferReader();
+        rowIndex = 0;
         while (true) {
             String line = getLineFromReader();
             if (line == null) break;
@@ -222,20 +233,17 @@ public class GraphUpdating {
             String combinedKey = tollUnitIndex + vehicleType;
             graph.moneyMap.put(combinedKey, fee);
             if (PathRestoration.debugging) {
-//                System.out.printf("unit=%s, vehicleType=%s, fee=%d\n", tollUnitIndex, vehicleType, fee);
+                System.out.printf("unit=%s, vehicleType=%s, fee=%d\n", tollUnitIndex, vehicleType, fee);
             }
         }
 
-        graph.moneyFlag = true;
         releaseResources();
         return true;
     }
 
     //update 404
     private static boolean updateMutualNode() throws IOException {
-        for (Node node: graph.nodes)
-            node.mutualNode = null;
-
+        //check
         reader = getBufferReader();
         String line = getLineFromReader();
         for (int index = 0; line != null; index++, line = getLineFromReader()) {
@@ -249,6 +257,19 @@ public class GraphUpdating {
                     System.err.println(errMsg);
                 return false;
             }
+        }
+
+        //update
+        for (Node node: graph.nodes)
+            node.mutualNode = null;
+
+        reader = getBufferReader();
+        line = getLineFromReader();
+        for (int index = 0; line != null; index++, line = getLineFromReader()) {
+            if (index < 2) continue;
+            String[] elements = line.split(",");
+            Node fakeNode_1 = new Node(elements[0]);
+            Node fakeNode_2 = new Node(elements[2]);
             Node realNode_1 = graph.nodes.get(graph.nodes.indexOf(fakeNode_1));
             Node realNode_2 = graph.nodes.get(graph.nodes.indexOf(fakeNode_2));
             realNode_1.mutualNode = realNode_2;

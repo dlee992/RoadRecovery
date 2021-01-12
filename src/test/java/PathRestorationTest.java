@@ -65,20 +65,28 @@ public class PathRestorationTest {
                         testCase.getString("enStationId"),
                         testCase.getString("exStationId")));
                 System.out.println(Arrays.toString(manualResult));
+
+                long manualSum = 0;
                 for (String node:
                         manualResult) {
                     int index = PathRestoration.graph.nodes.indexOf(new Node(node));
                     System.out.print(PathRestoration.graph.nodes.get(index).mileage + " ");
+                    manualSum += PathRestoration.graph.nodes.get(index).mileage;
                 }
                 System.out.println();
                 System.out.println(Arrays.toString(intellijResult));
+
+                long intellijSum = 0;
                 for (String node:
                      intellijResult) {
                     int index = PathRestoration.graph.nodes.indexOf(new Node(node));
                     System.out.print(PathRestoration.graph.nodes.get(index).mileage + " ");
+                    intellijSum += PathRestoration.graph.nodes.get(index).mileage;
                 }
                 System.out.println();
-                Assert.assertArrayEquals(manualResult, intellijResult);
+                Assert.assertEquals(manualSum, intellijSum);
+                if (manualSum != intellijSum)
+                    Assert.assertArrayEquals(manualResult, intellijResult);
                 System.out.flush();
             }
             else {
