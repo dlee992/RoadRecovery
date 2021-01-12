@@ -6,7 +6,7 @@
 
     <groupId>icsnju</groupId>
     <artifactId>RR</artifactId>
-    <version>1225-loading-with-bugfix</version>
+    <version>210112-only-load</version>
     <build>
         <plugins>
             <plugin>
