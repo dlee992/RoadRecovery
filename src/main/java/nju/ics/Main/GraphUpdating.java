@@ -99,36 +99,36 @@ public class GraphUpdating {
     }
 
     //update 402 supported
-    private static void updateOneNode(Node realNode, String[] elements, int rowIndex) {
-        try {
-            realNode.tollUnitList = new ArrayList<>();
-            realNode.tollUnitList.addAll(Arrays.asList(elements[2].split("\\|")));
-            realNode.tollUnitLength = Integer.parseInt(elements[3]);
-
-            if (elements.length < 5) {
-                if (PathRestoration.debugging)
-                    System.err.printf(
-                            "{WARNING}[exec updateMutualNode] rowIndex = %d in 402 hasn't mileage info.\n",
-                            rowIndex);
-                return;
-            }
-            realNode.mileage = Long.parseLong(elements[4]);
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Error line in 402:" + Arrays.toString(elements));
-        }
+    private static void updateOneNode(Node realNode, String[] elements) {
+        realNode.tollUnitList = new ArrayList<>();
+        realNode.tollUnitList.addAll(Arrays.asList(elements[2].split("\\|")));
+        realNode.tollUnitLength = Integer.parseInt(elements[3]);
+        realNode.mileage = Long.parseLong(elements[4]);
     }
 
     //update 401
     private static boolean updateNodeAndEdge() throws IOException {
         // Assume 401 is always correct, so never return false.
+        reader = getBufferReader();
+        int rowIndex = 0;
+        while (true) {
+            String line = getLineFromReader();
+            if (line == null) break;
+            if (rowIndex++ < 2) continue;
+            String[] elements = line.split(",");
+            if (elements.length < 4) {
+                errMsg = "one line (" + line + ") in 403, but too short.";
+                if (PathRestoration.debugging)
+                    System.err.println(errMsg);
+                return false;
+            }
+        }
 
         graph.nodes = new ArrayList<>();
         graph.edges = new HashSet<>();
 
         reader = getBufferReader();
-
-        int rowIndex = 0;
+        rowIndex = 0;
         while (true) {
             String line = getLineFromReader();
             if (line == null) break;
@@ -160,6 +160,23 @@ public class GraphUpdating {
     //update 402
     private static boolean updateMileage() throws IOException {
         // Assume always correct, never return false.
+        reader = getBufferReader();
+        int rowIndex = 0;
+        while (true) {
+            String line = getLineFromReader();
+            if (line == null) break;
+            if (rowIndex++ < 2) continue;
+            String[] elements = line.split(",");
+
+            if (elements.length < 5) {
+                if (PathRestoration.debugging)
+                    System.err.printf(
+                            "{WARNING}[exec updateMutualNode] rowIndex = %d in 402 lack of some info.\n",
+                            rowIndex);
+                return false;
+            }
+        }
+
         //update
         for (Node node:
                 graph.nodes) {
@@ -169,7 +186,7 @@ public class GraphUpdating {
         }
 
         reader = getBufferReader();
-        int rowIndex = 0;
+        rowIndex = 0;
         while (true) {
             Node realNode;
 
@@ -187,7 +204,7 @@ public class GraphUpdating {
                 continue;
             } else {
                 realNode = graph.nodes.get(graph.nodes.indexOf(fakeNode));
-                updateOneNode(realNode, elements, rowIndex);
+                updateOneNode(realNode, elements);
             }
 
             if (realNode.mutualNode != null) {
@@ -249,6 +266,12 @@ public class GraphUpdating {
         for (int index = 0; line != null; index++, line = getLineFromReader()) {
             if (index < 2) continue;
             String[] elements = line.split(",");
+            if (elements.length < 4) {
+                errMsg = "one line (" + line + ") in 404, but too short.";
+                if (PathRestoration.debugging)
+                    System.err.println(errMsg);
+                return false;
+            }
             Node fakeNode_1 = new Node(elements[0]);
             Node fakeNode_2 = new Node(elements[2]);
             if (!(graph.nodes.contains(fakeNode_1) && graph.nodes.contains(fakeNode_2))) {

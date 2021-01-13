@@ -6,7 +6,7 @@
 
     <groupId>icsnju</groupId>
     <artifactId>RR</artifactId>
-    <version>210112-only-load</version>
+    <version>210113-only-load</version>
     <build>
         <plugins>
             <plugin>
