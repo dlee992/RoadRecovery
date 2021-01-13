@@ -1,6 +1,9 @@
+import nju.ics.Main.GraphUpdating;
 import nju.ics.Main.RateLoading;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import java.io.IOException;
 
 
 public class RateLoadingTest {
@@ -14,57 +17,53 @@ public class RateLoadingTest {
     public int base;
 
     @Test
-    public void testRateLoading() {
+    public void testRateLoading() throws IOException {
         JSONObject jsonObject;
-        RateLoading rateLoading;
+        RateLoading rateLoading = new RateLoading();
         String ret;
 
         jsonObject = new JSONObject();
         jsonObject.put("file",      file1[base]);
         jsonObject.put("filePath",  filePath);
         jsonObject.put("paramType", 1);
-        rateLoading = new RateLoading();
         ret = rateLoading.rateLoadingMethod(jsonObject.toString());
         JSONObject jsonObject1 = new JSONObject(ret);
-        if (jsonObject1.get("code").equals("false")) {
-            System.err.println("OhMyGod_1");
-            System.exit(1);
+        if (jsonObject1.getInt("code") == 2) {
+            System.err.println("OhMyGod_1"+ GraphUpdating.errMsg);
+            throw new IOException();
         }
 
         jsonObject = new JSONObject();
         jsonObject.put("file",      file2[base]);
         jsonObject.put("filePath",  filePath);
         jsonObject.put("paramType", 2);
-        rateLoading = new RateLoading();
         ret = rateLoading.rateLoadingMethod(jsonObject.toString());
         jsonObject1 = new JSONObject(ret);
-        if (jsonObject1.get("code").equals("false")) {
-            System.err.println("OhMyGod_2");
-            System.exit(1);
+        if (jsonObject1.getInt("code") == 2) {
+            System.err.println("OhMyGod_2"+ GraphUpdating.errMsg);
+            throw new IOException();
         }
 
         jsonObject = new JSONObject();
         jsonObject.put("file",      file3[base]);
         jsonObject.put("filePath",  filePath);
         jsonObject.put("paramType", 3);
-        rateLoading = new RateLoading();
         ret = rateLoading.rateLoadingMethod(jsonObject.toString());
         jsonObject1 = new JSONObject(ret);
-        if (jsonObject1.get("code").equals("false")) {
-            System.err.println("OhMyGod_3");
-            System.exit(1);
+        if (jsonObject1.getInt("code") == 2) {
+            System.err.println("OhMyGod_3"+ GraphUpdating.errMsg);
+            throw new IOException();
         }
 
         jsonObject = new JSONObject();
         jsonObject.put("file",      file4[base]);
         jsonObject.put("filePath",  filePath);
         jsonObject.put("paramType", 4);
-        rateLoading = new RateLoading();
         ret = rateLoading.rateLoadingMethod(jsonObject.toString());
         jsonObject1 = new JSONObject(ret);
-        if (jsonObject1.get("code").equals("false")) {
-            System.err.println("OhMyGod_4");
-            System.exit(1);
+        if (jsonObject1.getInt("code") == 2) {
+            System.err.println("OhMyGod_4" + GraphUpdating.errMsg);
+            throw new IOException();
         }
     }
 }

@@ -48,7 +48,7 @@ public class PathRestorationTest {
     static int caseCount = 0;
 
     @Test
-    public void runWithTestCase() {
+    public void runWithTestCase() throws IOException {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
         rateLoadingTest.base = 0;
         rateLoadingTest.testRateLoading();

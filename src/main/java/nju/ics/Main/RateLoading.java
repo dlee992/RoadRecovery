@@ -28,6 +28,7 @@ public class RateLoading {
             for (UpdatedBasicData data :
                     dataArray) {
                 try {
+
                     if (!GraphUpdating.updateGraph(graph, data)) {
                         graph_consistent = false;
                         JSONObject retJson = new JSONObject();

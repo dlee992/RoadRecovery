@@ -103,6 +103,10 @@ public class GraphUpdating {
         realNode.tollUnitList = new ArrayList<>();
         realNode.tollUnitList.addAll(Arrays.asList(elements[2].split("\\|")));
         realNode.tollUnitLength = Integer.parseInt(elements[3]);
+        if (elements.length < 5) {
+            System.err.println("one line in 402 (node = "+ realNode.index +") lack of mileage info.");
+            return;
+        }
         realNode.mileage = Long.parseLong(elements[4]);
     }
 
@@ -168,7 +172,8 @@ public class GraphUpdating {
             if (rowIndex++ < 2) continue;
             String[] elements = line.split(",");
 
-            if (elements.length < 5) {
+            if (elements.length < 4) {
+                errMsg = "one line (" + line + ") in 402, but too short.";
                 if (PathRestoration.debugging)
                     System.err.printf(
                             "{WARNING}[exec updateMutualNode] rowIndex = %d in 402 lack of some info.\n",
@@ -261,8 +266,10 @@ public class GraphUpdating {
     //update 404
     private static boolean updateMutualNode() throws IOException {
         //check
+
         reader = getBufferReader();
         String line = getLineFromReader();
+
         for (int index = 0; line != null; index++, line = getLineFromReader()) {
             if (index < 2) continue;
             String[] elements = line.split(",");
