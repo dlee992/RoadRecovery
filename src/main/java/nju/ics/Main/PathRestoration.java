@@ -19,6 +19,8 @@ public class PathRestoration {
     public static boolean debugging = false;
 
     public static Graph graph = new Graph();
+    public static String[] versions = new String[]{"", "", "", ""};
+
     public static volatile Boolean graph_consistent = false;
 
     protected static ReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
@@ -163,12 +165,6 @@ public class PathRestoration {
         return returnJsonObj.toString();
     }
 
-    private Long getCurrentDate() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        LocalDateTime now = LocalDateTime.now();
-        return Long.valueOf(dtf.format(now));
-    }
-
     private JSONObject getReturnedJsonObject(RuntimePath recoveredPath, String description) {
         JSONObject returnJsonObj = new JSONObject();
         if (recoveredPath != null) {
@@ -177,6 +173,7 @@ public class PathRestoration {
 
             returnJsonObj.put("code", "1");
             returnJsonObj.put("description", "Success");
+            returnJsonObj.put("version", concat());
 
             //directly obtain the recoveredPath info.
             StringBuilder gantryHexGroup  = new StringBuilder();
@@ -238,6 +235,7 @@ public class PathRestoration {
         returnJsonObj.put("gantryHexGroup",  "");
         returnJsonObj.put("gantryFlagGroup", "");
         returnJsonObj.put("transTimeGroup",  "");
+        returnJsonObj.put("version",         PathRestoration.concat());
     }
 
     private Node getNode(Graph graph, String gantry, boolean isGantry) {
@@ -257,6 +255,10 @@ public class PathRestoration {
         if (desCount > 0) description += "|";
         desCount++;
         description += gantry;
+    }
+
+    public static String concat() {
+        return versions[0] + "|" + versions[1] + "|" + versions[2] + "|" + versions[3];
     }
 
 //    private static class UpdatedComparator implements Comparator<UpdatedBasicData> {

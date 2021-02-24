@@ -51,7 +51,11 @@ public class PathRestorationTest {
     public void runWithTestCase() throws IOException {
         RateLoadingTest rateLoadingTest = new RateLoadingTest();
         rateLoadingTest.base = 0;
+        System.out.println("开始第1次加载");
         rateLoadingTest.testRateLoading();
+//        System.out.println("开始第2次加载");
+//
+//        rateLoadingTest.testRateLoading();
 
         PathRestoration pathRestoration = new PathRestoration();
         String ret = pathRestoration.pathRestorationMethod(testCase.toString());
